@@ -1,8 +1,9 @@
 import { Preferences } from "@capacitor/preferences";
 import { useState, type SubmitEvent } from "react";
-import { Link, useNavigate, } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const SignupPage = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,12 +13,12 @@ const LoginPage = () => {
     e.preventDefault();
     
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/login`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
@@ -32,7 +33,7 @@ const LoginPage = () => {
         console.log(data.message);
       }
     } catch(e) {
-      console.error('Something went wrong!');
+      console.error('Something went wrong!', e);
     }
   }
 
@@ -43,8 +44,19 @@ const LoginPage = () => {
         <h1 className="text-[4em] font-bold italic -mt-5 text-transparent bg-gradient-to-r from-rose-700 to-purple-600 bg-clip-text">Kintsugi</h1>
       </div>
       <div className="w-full h-[67%] bg-gradient-to-br from-sky-600 via-sky-600 to-cyan-600 rounded-t-[20px]">
-        <form onSubmit={handleSubmit} className="w-full h-[80%] px-5 flex flex-col items-center justify-center gap-20">
+        <form onSubmit={handleSubmit} className="w-full h-[80%] px-5 flex flex-col items-center justify-center gap-10">
           <div className="grid grid-cols-10 items-center gap-5">
+            {/* username */}
+            <label htmlFor="username" className="text-lg font-semibold text-sky-100 col-span-3">Username:</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="h-10 bg-slate-200 rounded-sm col-span-7"
+              required
+            />
+
             {/* email */}
             <label htmlFor="email" className="text-lg font-semibold text-sky-100 col-span-3">Email:</label>
             <input
@@ -52,7 +64,7 @@ const LoginPage = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-10 bg-slate-200 rounded-sm col-span-7 px-2"
+              className="h-10 bg-slate-200 rounded-sm col-span-7"
               required
             />
 
@@ -63,21 +75,20 @@ const LoginPage = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-10 bg-slate-200 rounded-sm col-span-7 px-2"
+              className="h-10 bg-slate-200 rounded-sm col-span-7"
               required
             />
           </div>
-
 
           <div className="flex flex-col gap-5 items-center">
             <button
               type="submit"
               className="w-50 h-10 bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 rounded-[10px]">
-              Login
+              Signup
             </button>
             <div className="flex gap-2">
-              <p>Don't have an account?</p>
-              <Link to='/signup' className="text-amber-400 font-semibold">Signup</Link>
+              <p>Already have an account?</p>
+              <Link to='/login' className="text-amber-400 font-semibold">Login</Link>
             </div>
           </div>
         </form>
@@ -86,4 +97,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default SignupPage
