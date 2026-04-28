@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import 'dotenv/config.js';
 import { Request, Response } from "express";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
+import { AuthRequest } from "../middleware/auth.middleware";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -76,4 +77,17 @@ export const loginUser = async (req: Request, res: Response) => {
       message: 'Invalid credentials'
     })
   }
+}
+
+export const getUser = async (req: AuthRequest, res: Response) => {
+  const { id, username, email } = req.user;
+
+  res.status(200).json({
+    success: true,
+    user: {
+      id,
+      username,
+      email
+    }
+  });
 }

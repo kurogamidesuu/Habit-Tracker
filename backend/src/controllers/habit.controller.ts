@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 
 export const getHabits = async (req: AuthRequest, res: Response) => {
   const allHabits = await prisma.habit.findMany({
