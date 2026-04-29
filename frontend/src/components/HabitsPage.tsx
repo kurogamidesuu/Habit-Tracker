@@ -24,7 +24,7 @@ const HabitsPage = () => {
 
       <div className="w-full bg-zinc-700 flex flex-col gap-2 items-center p-4">
         {habits.length > 0 ?
-          habits.map((habit: Habit, index) => (
+          habits.map((habit, index) => (
             <HabitBox
               key={`${index}-${habit.id}`}
               title={habit.title}

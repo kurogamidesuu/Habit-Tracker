@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
 import { getUser, type User } from "../api/user";
+import { fetchHabits, type Habit, } from "../api/habits";
+import HabitTab from "./HabitTab";
 
 const HomePage = () => {
-  const [username, setUsername] = useState("User67");
+  const [username, setUsername] = useState("");
+  const [habits, setHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -14,12 +17,45 @@ const HomePage = () => {
       }
     }
 
+    const getAllHabits = async () => {
+      try {
+        const fetchedHabits = await fetchHabits();
+        setHabits(fetchedHabits);
+      } catch(e) {
+        console.log(e);
+      }
+    }
+
     getUserDetails();
+    getAllHabits();
   }, []);
 
   return (
-    <main className="h-screen w-full bg-zinc-800 text-slate-300 flex flex-col items-center justify-center">
-      <h1 className="text-3xl">Welcome to Kintsugi {username}</h1>
+    <main className="h-screen w-full bg-sky-950 text-yellow-50 flex flex-col items-center py-3 px-4">
+      <h1 className="text-[3.5em] font-bold text-transparent bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 bg-clip-text">KINTSUGI</h1>
+      <h3>Welcome back, {username}! Let's stay consistent.</h3>
+
+      <div className="w-[95%] h-15 bg-sky-800 my-5 rounded-md flex flex-col items-center justify-center">
+        <div className="bg-sky-100 w-[90%] h-1.5">
+          {habits.map((habit, index) => {
+            if (habit.isComplete) return <div key={`${index}-${habit.id}`} className={`h-full w-1/${(habits.length)} bg-green-600`} />
+          })}
+        </div>
+        <p className="text-sm mt-2">{habits.filter(h => h.isComplete).length}/{habits.length} Completed</p>
+      </div>
+
+      <div className="w-full my-5">
+        <h3 className="text-xl">Habits remaining today:</h3>
+        <div className="flex flex-col gap-2 my-2">
+          {habits.filter((habit) => !habit.isComplete).map((habit, index) => (
+            <HabitTab
+              key={`${index}-${habit.id}`}
+              title={habit.title}
+              streak={habit.streak}
+            />
+          ))}
+        </div>
+      </div>
     </main>
   )
 }
