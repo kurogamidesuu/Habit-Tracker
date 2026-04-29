@@ -32,7 +32,7 @@ const LoginPage = () => {
         console.log(data.message);
       }
     } catch(e) {
-      console.error('Something went wrong!');
+      console.error('Something went wrong!', e);
     }
   }
 

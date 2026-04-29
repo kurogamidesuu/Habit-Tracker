@@ -1,30 +1,21 @@
-import { Preferences } from "@capacitor/preferences";
 import { useEffect, useState } from "react"
+import { getUser, type User } from "../api/user";
 
 const HomePage = () => {
   const [username, setUsername] = useState("User67");
 
   useEffect(() => {
-    const getUser = async () => {
-      const { value: token } = await Preferences.get({ key: 'habit-token' });
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/profile`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setUsername(data.user.username);
-      } else {
-        console.log('Failed to load profile')
+    const getUserDetails = async () => {
+      try {
+        const user: User = await getUser();
+        setUsername(user.username);
+      } catch(e) {
+        console.log(e);
       }
     }
 
-    getUser();
-  }, [])
+    getUserDetails();
+  }, []);
 
   return (
     <main className="h-screen w-full bg-zinc-800 text-slate-300 flex flex-col items-center justify-center">
