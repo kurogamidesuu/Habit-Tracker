@@ -1,19 +1,39 @@
+import { FaTrash } from "react-icons/fa";
+import { deleteHabit } from "../api/habits";
+
 interface HabitProps {
+  id: number;
   title: string;
   streak: number;
   isComplete: boolean;
 }
 
-const HabitBox = ({ title, streak, isComplete }: HabitProps) => {
+const HabitBox = ({ id, title, streak, isComplete }: HabitProps) => {
+  const handleDelete = async () => {
+    try {
+      const data = await deleteHabit(id);
+      alert(data.message);
+      location.reload();
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   return (
-    <div className="w-[90%] h-16 bg-sky-800/80 rounded-lg px-4 py-2 grid grid-cols-3 items-center">
-      <h3>{title}</h3>
-      <p>{streak}</p>
-      {isComplete ? (
-        <div className="h-5 w-5 bg-green-700 rounded-full" />
-      ) : (
-        <div className="h-5 w-5 bg-red-700 rounded-full" />
-      )}
+    <div className={`w-full h-16 bg-sky-600/50 rounded-lg px-4 py-2 flex gap-2 justify-between items-center border-l-5 ${isComplete ? 'border-lime-500' : "border-transparent"}`}>
+      <h3 className="w-[40%]">{title}</h3>
+      <div className="text-sm">
+        <p>Current Streak: {streak}</p>
+        <p>Max Streak: {streak}</p>
+      </div>
+      <div>
+        <button
+          onClick={handleDelete}
+          className="text-xl hover:text-red-800"
+        >
+          <FaTrash />
+        </button>
+      </div>
     </div>
   )
 }
