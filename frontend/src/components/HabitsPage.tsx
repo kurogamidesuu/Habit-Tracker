@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react"
 import HabitBox from "./HabitBox";
 import { fetchHabits, type Habit } from "../api/habits";
+import AddHabitForm from "./AddHabitForm";
 
 const HabitsPage = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
    const getAllHabits = async () => {
@@ -16,7 +19,7 @@ const HabitsPage = () => {
   }
 
     getAllHabits();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <main className="h-screen w-full bg-sky-950 flex flex-col items-center text-sky-50 py-4">
@@ -24,9 +27,11 @@ const HabitsPage = () => {
 
       <button
         className="w-[80%] h-10 bg-lime-600 rounded-md my-5"
+        onClick={() => setShowForm(p => !p)}
       >
-        Add new habit
+        {showForm ? "X" : "Add new Habit"}
       </button>
+      {showForm && <AddHabitForm setShowForm={setShowForm} setRefreshKey={setRefreshKey} />}
 
       <div className="w-full bg-sky-600/20 flex flex-col gap-2 items-center p-4">
         {habits.length > 0 ?

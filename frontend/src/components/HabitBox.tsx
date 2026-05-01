@@ -1,5 +1,6 @@
 import { FaTrash } from "react-icons/fa";
 import { deleteHabit } from "../api/habits";
+import { toast } from "react-toastify";
 
 interface HabitProps {
   id: number;
@@ -12,10 +13,11 @@ const HabitBox = ({ id, title, streak, isComplete }: HabitProps) => {
   const handleDelete = async () => {
     try {
       const data = await deleteHabit(id);
-      alert(data.message);
-      location.reload();
+      toast(data);
     } catch(e) {
       console.log(e);
+    } finally {
+      location.reload()
     }
   }
 

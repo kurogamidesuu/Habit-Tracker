@@ -6,6 +6,7 @@ import SignupPage from "./components/SignupPage"
 import MainLayout from "./components/MainLayout"
 import HabitsPage from "./components/HabitsPage"
 import ProfilePage from "./components/ProfilePage"
+import { Bounce, ToastContainer } from "react-toastify"
 
 const App = () => {
   return (
@@ -25,6 +26,19 @@ const App = () => {
         </Route>
         
       </Routes>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+        />
     </BrowserRouter>
   )
 }
