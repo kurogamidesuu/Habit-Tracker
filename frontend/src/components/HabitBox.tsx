@@ -1,15 +1,22 @@
 import { FaTrash } from "react-icons/fa";
 import { deleteHabit } from "../api/habits";
 import { toast } from "react-toastify";
+import { useRef } from "react";
 
 interface HabitProps {
   id: number;
   title: string;
   streak: number;
   isComplete: boolean;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const HabitBox = ({ id, title, streak, isComplete }: HabitProps) => {
+const HabitBox = ({ id, title, streak, isComplete, setRefreshKey }: HabitProps) => {
+  const modalRef = useRef<HTMLDialogElement | null>(null);
+
+  const openModal = () => modalRef.current?.showModal();
+  const closeModal = () => modalRef.current?.close();
+
   const handleDelete = async () => {
     try {
       const data = await deleteHabit(id);
@@ -17,7 +24,8 @@ const HabitBox = ({ id, title, streak, isComplete }: HabitProps) => {
     } catch(e) {
       console.log(e);
     } finally {
-      location.reload()
+      setRefreshKey(p => p+1);
+      closeModal();
     }
   }
 
@@ -30,12 +38,33 @@ const HabitBox = ({ id, title, streak, isComplete }: HabitProps) => {
       </div>
       <div>
         <button
-          onClick={handleDelete}
+          onClick={openModal}
           className="text-xl hover:text-red-800"
         >
           <FaTrash />
         </button>
       </div>
+      <dialog
+        ref={modalRef}
+        className="h-40 w-[80%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 p-3 bg-sky-900 border-2 border-amber-500 rounded-xl text-sky-50"
+      >
+        <h2 className="text-lg">Are you sure you want to delete?</h2>
+
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex justify-evenly w-full">
+          <button
+            className="bg-sky-300/80 w-20 h-7 rounded-md text-sky-900 font-bold"
+            onClick={handleDelete}
+          >
+            Yes
+          </button>
+          <button
+            className="bg-sky-300/80 w-20 h-7 rounded-md text-sky-900 font-bold"
+            onClick={closeModal}
+          >
+            No
+          </button>
+        </div>
+      </dialog>
     </div>
   )
 }

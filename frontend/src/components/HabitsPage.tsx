@@ -29,7 +29,7 @@ const HabitsPage = () => {
         className="w-[80%] h-10 bg-lime-600 rounded-md my-5"
         onClick={() => setShowForm(p => !p)}
       >
-        {showForm ? "X" : "Add new Habit"}
+        {showForm ? "Close" : "Add New Habit"}
       </button>
       {showForm && <AddHabitForm setShowForm={setShowForm} setRefreshKey={setRefreshKey} />}
 
@@ -42,6 +42,7 @@ const HabitsPage = () => {
               title={habit.title}
               streak={habit.streak}
               isComplete={habit.isComplete}
+              setRefreshKey={setRefreshKey}
             />
           )) : <div>No habits yet...</div>
         
