@@ -69,3 +69,44 @@ export const removeHabit = async (req: AuthRequest, res: Response) => {
     })
   }
 }
+
+export const completeHabit = async (req: AuthRequest, res: Response) => {
+  const { id } = req.body;
+
+  try {
+    const habit = await prisma.habit.findUnique({
+      where: {
+        id,
+      }
+    });
+
+    if (!habit) {
+      return res.status(404).json({
+        success: false,
+        message: "Could not find the habit",
+      });
+    }
+
+    const streak = habit.streak;
+    
+    const updatedHabit = await prisma.habit.update({
+      where: {
+        id,
+      },
+      data: {
+        isComplete: true,
+        streak: streak + 1
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      updatedHabit
+    })
+  } catch(e) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update the habit"
+    })
+  }
+}

@@ -67,3 +67,23 @@ export const deleteHabit = async (id: number) => {
 
   return data.message;
 }
+
+export const completeHabit = async (id: number) => {
+  const { value: token } = await Preferences.get({ key: 'habit-token' });
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id }),
+  });
+
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(data.message || 'Something went wrong');
+  }
+
+  return data;
+}

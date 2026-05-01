@@ -6,6 +6,7 @@ import HabitTab from "./HabitTab";
 const HomePage = () => {
   const [username, setUsername] = useState("");
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const getUserDetails = async () => {
@@ -17,6 +18,12 @@ const HomePage = () => {
       }
     }
 
+    getUserDetails();
+  }, [])
+
+  useEffect(() => {
+    
+
     const getAllHabits = async () => {
       try {
         const fetchedHabits = await fetchHabits();
@@ -26,9 +33,8 @@ const HomePage = () => {
       }
     }
 
-    getUserDetails();
     getAllHabits();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <main className="h-screen w-full bg-sky-950 text-yellow-50 flex flex-col items-center py-3 px-4">
@@ -36,7 +42,7 @@ const HomePage = () => {
       <h3>Welcome back, {username}! Let's stay consistent.</h3>
 
       <div className="w-[95%] h-15 bg-sky-800 my-5 rounded-md flex flex-col items-center justify-center">
-        <div className="bg-sky-100 w-[90%] h-1.5">
+        <div className="bg-sky-100 w-[90%] h-1.5 flex">
           {habits.map((habit, index) => {
             if (habit.isComplete) return <div key={`${index}-${habit.id}`} className={`h-full w-1/${(habits.length)} bg-green-600`} />
           })}
@@ -50,8 +56,8 @@ const HomePage = () => {
           {habits.filter((habit) => !habit.isComplete).map((habit, index) => (
             <HabitTab
               key={`${index}-${habit.id}`}
-              title={habit.title}
-              streak={habit.streak}
+              habit={habit}
+              setRefreshKey={setRefreshKey}
             />
           ))}
         </div>
