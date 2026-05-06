@@ -139,7 +139,8 @@ export const completeHabit = async (req: AuthRequest, res: Response) => {
       },
       data: {
         isComplete: true,
-        currentStreak: newStreak
+        currentStreak: newStreak,
+        maxStreak: Math.max(habit.maxStreak, newStreak)
       }
     });
 
