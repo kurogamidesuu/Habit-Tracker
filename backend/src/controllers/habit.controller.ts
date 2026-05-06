@@ -5,11 +5,11 @@ import { prisma } from "../lib/prisma";
 export const getHabits = async (req: AuthRequest, res: Response) => {
   const allHabits = await prisma.habit.findMany({
     where: {
-      userId: req.user?.id,
+      userId: req.user.id,
     }
-  });
+  })
 
-  if (allHabits && allHabits.length > 1) {
+  if (allHabits && allHabits.length > 0) {
     return res.status(200).json({
       success: true,
       allHabits
@@ -29,7 +29,8 @@ export const addHabit = async (req: AuthRequest, res: Response) => {
     const newHabit = await prisma.habit.create({
       data: {
         title,
-        streak: 0,
+        currentStreak: 0,
+        maxStreak: 0,
         isComplete: false,
         userId: req.user?.id,
       }
@@ -71,7 +72,7 @@ export const removeHabit = async (req: AuthRequest, res: Response) => {
 }
 
 export const completeHabit = async (req: AuthRequest, res: Response) => {
-  const { id } = req.body;
+  const { id, dateString } = req.body;
 
   try {
     const habit = await prisma.habit.findUnique({
@@ -87,15 +88,58 @@ export const completeHabit = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const streak = habit.streak;
-    
+    const existingLog = await prisma.habitLog.findFirst({
+      where: {
+        habitId: id,
+        dateString
+      }
+    });
+
+    if (existingLog) {
+      return res.status(400).json({
+        success: false,
+        message: "Habit already completed today"
+      });
+    }
+
+    const lastLog = await prisma.habitLog.findFirst({
+      where: {
+        habitId: id
+      },
+      orderBy: {
+        dateString: 'desc'
+      }
+    });
+
+    const todayObj = new Date(dateString);
+    const yesterdayObj = new Date(todayObj);
+    yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+    const yesterdayString = yesterdayObj.toISOString().split('T')[0];
+
+    let newStreak = 1;
+
+    if (lastLog) {
+      if (lastLog.dateString === yesterdayString) {
+        newStreak = habit.currentStreak + 1;
+      } else {
+        newStreak = 1;
+      }
+    }
+
+    const newLog = await prisma.habitLog.create({
+      data: {
+        dateString,
+        habitId: id,
+      }
+    });
+
     const updatedHabit = await prisma.habit.update({
       where: {
         id,
       },
       data: {
         isComplete: true,
-        streak: streak + 1
+        currentStreak: newStreak
       }
     });
 

@@ -3,7 +3,8 @@ import { Preferences } from "@capacitor/preferences";
 export interface Habit {
   id: number;
   title: string;
-  streak: number;
+  currentStreak: number;
+  maxStreak: number;
   isComplete: boolean;
 }
 
@@ -70,6 +71,7 @@ export const deleteHabit = async (id: number) => {
 
 export const completeHabit = async (id: number) => {
   const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const dateString = new Date().toLocaleDateString('en-CA');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
     method: 'PATCH',
@@ -77,7 +79,7 @@ export const completeHabit = async (id: number) => {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ id, dateString }),
   });
 
   const data = await res.json();

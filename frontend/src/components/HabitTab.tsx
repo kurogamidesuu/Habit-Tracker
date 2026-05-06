@@ -20,7 +20,7 @@ const HabitTab = ({ habit, setRefreshKey }: HabitProps) => {
     <div className="h-18 w-full bg-gradient-to-br from-sky-300/50 to-sky-500/50 rounded-lg flex items-center px-2 py-1">
       <div className="w-[77%]">
         <h1 className="text-lg">{habit.title}</h1>
-        <p className="text-sm text-amber-300">current streak: <span className="text-base font-bold">{habit.streak}</span></p>
+        <p className="text-sm text-amber-300">current streak: <span className="text-base font-bold">{habit.currentStreak}</span></p>
       </div>
       <button
         onClick={handleCompleteHabit}

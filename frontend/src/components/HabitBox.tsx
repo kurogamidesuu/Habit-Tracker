@@ -6,12 +6,13 @@ import { useRef } from "react";
 interface HabitProps {
   id: number;
   title: string;
-  streak: number;
+  currentStreak: number;
+  maxStreak: number;
   isComplete: boolean;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const HabitBox = ({ id, title, streak, isComplete, setRefreshKey }: HabitProps) => {
+const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete, setRefreshKey }: HabitProps) => {
   const modalRef = useRef<HTMLDialogElement | null>(null);
 
   const openModal = () => modalRef.current?.showModal();
@@ -33,8 +34,8 @@ const HabitBox = ({ id, title, streak, isComplete, setRefreshKey }: HabitProps) 
     <div className={`w-full h-16 bg-sky-600/50 rounded-lg px-4 py-2 flex gap-2 justify-between items-center border-l-5 ${isComplete ? 'border-lime-500' : "border-transparent"}`}>
       <h3 className="w-[40%]">{title}</h3>
       <div className="text-sm">
-        <p>Current Streak: {streak}</p>
-        <p>Max Streak: {streak}</p>
+        <p>Current Streak: {currentStreak}</p>
+        <p>Max Streak: {maxStreak}</p>
       </div>
       <div>
         <button

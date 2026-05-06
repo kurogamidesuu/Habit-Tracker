@@ -17,7 +17,7 @@ const AddHabitForm = ({ setShowForm, setRefreshKey }: AddHabitProps) => {
       const message = await addHabit(habitTitle);
       toast(message);
     } catch(e) {
-      alert(e);
+      console.log(e);
     } finally {
       setShowForm(false);
       setRefreshKey(p => p+1);

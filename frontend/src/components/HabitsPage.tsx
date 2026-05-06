@@ -40,7 +40,8 @@ const HabitsPage = () => {
               id={habit.id}
               key={`${index}-${habit.id}`}
               title={habit.title}
-              streak={habit.streak}
+              currentStreak={habit.currentStreak}
+              maxStreak={habit.maxStreak}
               isComplete={habit.isComplete}
               setRefreshKey={setRefreshKey}
             />
