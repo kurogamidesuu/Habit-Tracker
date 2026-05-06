@@ -2,11 +2,21 @@ import { useEffect, useState } from "react"
 import HabitBox from "./HabitBox";
 import { fetchHabits, type Habit } from "../api/habits";
 import AddHabitForm from "./AddHabitForm";
+import { useResetStreak } from "../hooks/streakResetTimer";
 
 const HabitsPage = () => {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useResetStreak(() => {
+    console.log('Midnight hit resetting UI...');
+
+    setHabits(prevHabits => prevHabits.map(habit => ({
+      ...habit,
+      isComplete: false,
+    })));
+  });
 
   useEffect(() => {
    const getAllHabits = async () => {

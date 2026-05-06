@@ -2,11 +2,21 @@ import { useEffect, useState } from "react"
 import { getUser, type User } from "../api/user";
 import { fetchHabits, type Habit, } from "../api/habits";
 import HabitTab from "./HabitTab";
+import { useResetStreak } from "../hooks/streakResetTimer";
 
 const HomePage = () => {
   const [username, setUsername] = useState("");
   const [habits, setHabits] = useState<Habit[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useResetStreak(() => {
+    console.log('Midnight hit resetting UI...');
+
+    setHabits(prevHabits => prevHabits.map(habit => ({
+      ...habit,
+      isComplete: false,
+    })));
+  });
 
   useEffect(() => {
     const getUserDetails = async () => {
