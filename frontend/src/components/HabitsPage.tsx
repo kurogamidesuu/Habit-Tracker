@@ -1,35 +1,21 @@
 import { useEffect, useState } from "react"
 import HabitBox from "./HabitBox";
-import { fetchHabits, type Habit } from "../api/habits";
 import AddHabitForm from "./AddHabitForm";
 import { useResetStreak } from "../hooks/streakResetTimer";
+import { useHabitStore } from "../store/useHabitStore";
 
 const HabitsPage = () => {
-  const [habits, setHabits] = useState<Habit[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+
+  const { habits, getAllHabits, resetHabitsAtMidnight, isLoading } = useHabitStore();
 
   useResetStreak(() => {
-    console.log('Midnight hit resetting UI...');
-
-    setHabits(prevHabits => prevHabits.map(habit => ({
-      ...habit,
-      isComplete: false,
-    })));
+    resetHabitsAtMidnight();
   });
 
   useEffect(() => {
-   const getAllHabits = async () => {
-    try {
-      const fetchedHabits = await fetchHabits();
-      setHabits(fetchedHabits);
-    } catch(e) {
-      console.log(e);
-    }
-  }
-
     getAllHabits();
-  }, [refreshKey]);
+  }, [getAllHabits]);
 
   return (
     <main className="h-screen w-full bg-sky-950 flex flex-col items-center text-sky-50 py-4">
@@ -41,10 +27,13 @@ const HabitsPage = () => {
       >
         {showForm ? "Close" : "Add New Habit"}
       </button>
-      {showForm && <AddHabitForm setShowForm={setShowForm} setRefreshKey={setRefreshKey} />}
+
+      {showForm && <AddHabitForm setShowForm={setShowForm} />}
 
       <div className="w-full bg-sky-600/20 flex flex-col gap-2 items-center p-4">
-        {habits.length > 0 ?
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : habits.length > 0 ? (
           habits.map((habit, index) => (
             <HabitBox
               id={habit.id}
@@ -53,11 +42,11 @@ const HabitsPage = () => {
               currentStreak={habit.currentStreak}
               maxStreak={habit.maxStreak}
               isComplete={habit.isComplete}
-              setRefreshKey={setRefreshKey}
             />
-          )) : <div>No habits yet...</div>
-        
-        }
+          ))
+        ) : (
+          <div>No habits yet...</div>
+        )}
       </div>
     </main>
   )

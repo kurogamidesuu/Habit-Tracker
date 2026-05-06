@@ -1,7 +1,7 @@
 import { Preferences } from "@capacitor/preferences";
 
 export interface Habit {
-  id: number;
+  id: string;
   title: string;
   currentStreak: number;
   maxStreak: number;
@@ -49,7 +49,7 @@ export const addHabit = async (title: string) => {
   return data.message;
 }
 
-export const deleteHabit = async (id: number) => {
+export const deleteHabit = async (id: string) => {
   const { value: token } = await Preferences.get({ key: 'habit-token' });
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/remove`, {
@@ -69,9 +69,8 @@ export const deleteHabit = async (id: number) => {
   return data.message;
 }
 
-export const completeHabit = async (id: number) => {
+export const completeHabit = async (id: string, dateString: string) => {
   const { value: token } = await Preferences.get({ key: 'habit-token' });
-  const dateString = new Date().toLocaleDateString('en-CA');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
     method: 'PATCH',

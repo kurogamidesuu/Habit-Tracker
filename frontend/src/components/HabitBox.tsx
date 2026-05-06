@@ -1,31 +1,32 @@
 import { FaTrash } from "react-icons/fa";
-import { deleteHabit } from "../api/habits";
 import { toast } from "react-toastify";
 import { useRef } from "react";
+import { useHabitStore } from "../store/useHabitStore";
 
 interface HabitProps {
-  id: number;
+  id: string;
   title: string;
   currentStreak: number;
   maxStreak: number;
   isComplete: boolean;
-  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete, setRefreshKey }: HabitProps) => {
+const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProps) => {
   const modalRef = useRef<HTMLDialogElement | null>(null);
+
+  const { removeHabit } = useHabitStore();
 
   const openModal = () => modalRef.current?.showModal();
   const closeModal = () => modalRef.current?.close();
 
   const handleDelete = async () => {
     try {
-      const data = await deleteHabit(id);
-      toast(data);
+      await removeHabit(id);
+      toast.success("Habit deleted");
     } catch(e) {
       console.log(e);
+      toast.error("Failed to delete habit");
     } finally {
-      setRefreshKey(p => p+1);
       closeModal();
     }
   }
@@ -45,6 +46,7 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete, setRefreshK
           <FaTrash />
         </button>
       </div>
+
       <dialog
         ref={modalRef}
         className="h-40 w-[80%] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 p-3 bg-sky-900 border-2 border-amber-500 rounded-xl text-sky-50"

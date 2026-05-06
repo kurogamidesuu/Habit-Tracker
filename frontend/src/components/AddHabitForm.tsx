@@ -1,26 +1,27 @@
 import { useState, type SubmitEvent } from "react";
 import { FiPlus } from "react-icons/fi"
-import { addHabit } from "../api/habits";
 import { toast } from "react-toastify";
+import { useHabitStore } from "../store/useHabitStore";
 
 interface AddHabitProps {
   setShowForm: (value: React.SetStateAction<boolean>) => void;
-  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const AddHabitForm = ({ setShowForm, setRefreshKey }: AddHabitProps) => {
+const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
   const [habitTitle, setHabitTitle] = useState("");
+
+  const { addNewHabit } = useHabitStore();
+
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     try {
-      const message = await addHabit(habitTitle);
-      toast(message);
+      await addNewHabit(habitTitle);
+      toast.success("Habit added successfully!");
+      setShowForm(false);
     } catch(e) {
       console.log(e);
-    } finally {
-      setShowForm(false);
-      setRefreshKey(p => p+1);
+      toast.error("Failed to add habit");
     }
   }
 

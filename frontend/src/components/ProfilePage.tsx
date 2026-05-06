@@ -1,33 +1,16 @@
-import { useEffect, useState } from "react";
-import { getUser, type User } from "../api/user";
-import { fetchHabits, type Habit } from "../api/habits";
+import { useEffect } from "react";
+import { useUserStore } from "../store/useUserStore";
+import { useHabitStore } from "../store/useHabitStore";
 
 const ProfilePage = () => {
-  const [username, setUsername] = useState("User67");
-  const [habitsCount, setHabitsCount] = useState(0);
+  const { getUserDetails, username } = useUserStore();
+  const { habits } = useHabitStore();
 
   useEffect(() => {
-    const getUserDetails = async () => {
-      try {
-        const user: User = await getUser();
-        setUsername(user.username);
-      } catch(e) {
-        console.log(e);
-      }
-    }
-
-    const getHabitDetails = async () => {
-      try {
-        const habits: Habit[] = await fetchHabits();
-        setHabitsCount(habits.length);
-      } catch(e) {
-        console.log(e);
-      }
-    }
-
     getUserDetails();
-    getHabitDetails();
-  }, []);
+  }, [getUserDetails]);
+
+  const habitsCount = habits.length;
 
   return (
     <main className="h-screen w-full bg-sky-950 text-slate-200 flex flex-col items-center py-10 px-2">
