@@ -19,7 +19,7 @@ model Habit {
   maxStreak     Int
   isComplete    Boolean
   completions   HabitLog[]
-  user          User       @relation(fields: [userId], references: [id])
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
 
   createdAt DateTime @default(now())
