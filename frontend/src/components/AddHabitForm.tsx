@@ -35,6 +35,7 @@ const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
           value={habitTitle}
           onChange={(e) => setHabitTitle(e.target.value)}
           className="bg-sky-50 p-1 mx-2 text-zinc-900 rounded-md border-amber-600 focus:border-2 focus:outline-none"
+          maxLength={40}
         />
       </div>
       <button className="col-span-2 ml-1 bg-lime-600 h-8 w-8 flex items-center justify-center p-1 rounded-lg">

@@ -32,9 +32,9 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProp
   }
 
   return (
-    <div className={`w-full h-16 bg-sky-600/50 rounded-lg px-4 py-2 flex gap-2 justify-between items-center border-l-5 ${isComplete ? 'border-lime-500' : "border-transparent"}`}>
-      <h3 className="w-[40%]">{title}</h3>
-      <div className="text-sm">
+    <div className={`w-full h-18 bg-sky-600/50 rounded-lg px-4 py-2 flex justify-between items-center border-l-5 ${isComplete ? 'border-lime-500' : "border-transparent"}`}>
+      <h3 className="w-[50%] text-[0.9em]">{title}</h3>
+      <div className="text-[0.8em] text-sky-100/80">
         <p>Current Streak: {currentStreak}</p>
         <p>Max Streak: {maxStreak}</p>
       </div>

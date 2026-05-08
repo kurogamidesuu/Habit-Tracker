@@ -21,8 +21,8 @@ const HabitTab = ({ habit }: HabitProps) => {
   return (
     <div className="h-18 w-full bg-gradient-to-br from-sky-300/50 to-sky-500/50 rounded-lg flex items-center px-2 py-1">
       <div className="w-[77%]">
-        <h1 className="text-lg">{habit.title}</h1>
-        <p className="text-sm text-amber-300">current streak: <span className="text-base font-bold">{habit.currentStreak}</span></p>
+        <h1 className="text-[0.9em]">{habit.title}</h1>
+        <p className="text-sm text-amber-300/90 my-1">current streak: <span className="text-[1em] text-amber-300 font-bold">{habit.currentStreak}</span></p>
       </div>
       <button
         onClick={handleCompleteHabit}
