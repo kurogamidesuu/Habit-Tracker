@@ -8,5 +8,4 @@ userRouter.post('/signup', registerUser);
 userRouter.post('/login', loginUser);
 userRouter.get('/profile', authMiddleware, getUser);
 
-
 export default userRouter;

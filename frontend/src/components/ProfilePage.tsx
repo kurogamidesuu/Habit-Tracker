@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useUserStore } from "../store/useUserStore";
 import { useHabitStore } from "../store/useHabitStore";
-import { RxAvatar } from "react-icons/rx";
+import { Preferences } from "@capacitor/preferences";
 
 const ProfilePage = () => {
   const { getUserDetails, username } = useUserStore();
@@ -14,8 +14,9 @@ const ProfilePage = () => {
   const habitsCount = habits.length;
   const bestMaxStreak = habits.reduce((max, habit) => Math.max(max, habit.maxStreak), 0);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     location.replace('/login');
+    await Preferences.remove({ key: 'habit-token' });
   }
 
   return (
