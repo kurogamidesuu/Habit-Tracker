@@ -10,7 +10,6 @@ interface HabitState {
   addNewHabit: (title: string) => Promise<void>;
   removeHabit: (id: string) => Promise<void>;
   markHabitComplete: (id: string, dateString: string) => Promise<void>;
-  resetHabitsAtMidnight: () => void;
 }
 
 export const useHabitStore = create<HabitState>((set, get) => ({
@@ -55,7 +54,7 @@ export const useHabitStore = create<HabitState>((set, get) => ({
           ...h,
           isComplete: true,
           currentStreak: h.currentStreak + 1,
-          maxStreak: h.currentStreak + 1,
+          maxStreak: Math.max(h.maxStreak, h.currentStreak + 1),
         } : h
       )
     }));
@@ -66,14 +65,5 @@ export const useHabitStore = create<HabitState>((set, get) => ({
       console.error("Failed to save to DB", e);
       get().getAllHabits();
     }
-  },
-
-  resetHabitsAtMidnight: () => {
-    set((state) => ({
-      habits: state.habits.map((h) => ({
-        ...h,
-        isComplete: false
-      }))
-    }));
   }
 }));

@@ -7,10 +7,10 @@ import { useHabitStore } from "../store/useHabitStore";
 const HabitsPage = () => {
   const [showForm, setShowForm] = useState(false);
 
-  const { habits, getAllHabits, resetHabitsAtMidnight, isLoading } = useHabitStore();
+  const { habits, getAllHabits, isLoading } = useHabitStore();
 
   useResetStreak(() => {
-    resetHabitsAtMidnight();
+    getAllHabits();
   });
 
   useEffect(() => {

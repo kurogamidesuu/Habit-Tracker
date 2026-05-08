@@ -6,10 +6,10 @@ import { useUserStore } from "../store/useUserStore";
 
 const HomePage = () => {
   const { username, getUserDetails } = useUserStore();
-  const { habits, getAllHabits, isLoading, resetHabitsAtMidnight } = useHabitStore();
+  const { habits, getAllHabits, isLoading } = useHabitStore();
 
   useResetStreak(() => {
-    resetHabitsAtMidnight();
+    getAllHabits();
   });
 
   useEffect(() => {

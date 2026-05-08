@@ -3,11 +3,54 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import { prisma } from "../lib/prisma";
 
 export const getHabits = async (req: AuthRequest, res: Response) => {
-  const allHabits = await prisma.habit.findMany({
+  const today = new Date().toLocaleDateString('en-CA');
+  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
+
+  const habits = await prisma.habit.findMany({
     where: {
       userId: req.user.id,
+    },
+    include: {
+      completions: {
+        where: {
+          dateString: {
+            in: [today, yesterday]
+          }
+        }
+      }
     }
-  })
+  });
+
+  const allHabits = await Promise.all(
+    habits.map(async (habit) => {
+      const completedToday = habit.completions.some(c => c.dateString === today);
+      const completedYesterday = habit.completions.some(c => c.dateString === yesterday);
+      const streakAlive = completedToday || completedYesterday;
+
+      const updates: { currentStreak?: number; isComplete?: boolean } = {};
+
+      if (!streakAlive && habit.currentStreak > 0) {
+        updates.currentStreak = 0;
+      }
+
+      if (!completedToday && habit.isComplete) {
+        updates.isComplete = false;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        const updated = await prisma.habit.update({
+          where: { id: habit.id },
+          data: updates
+        });
+
+        const { completions, ...rest } = { ...habit, ...updated };
+        return rest;
+      }
+
+      const { completions, ...rest } = habit;
+      return rest;
+    })
+  );
 
   if (allHabits && allHabits.length > 0) {
     return res.status(200).json({
