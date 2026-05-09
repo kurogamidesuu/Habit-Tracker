@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec tsx src/server.ts",
     "build": "prisma generate && tsc",
-    "start": "prisma generate && tsc && node dist/server.js",
+    "start": "node dist/server.js",
     "test": "vitest run"
   },
   "keywords": [],
@@ -14,6 +14,7 @@
   "license": "ISC",
   "description": "A minimal app for tracking your habits",
   "dependencies": {
+    "typescript": "^6.0.3",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.3",
@@ -34,7 +35,6 @@
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   }
 }
