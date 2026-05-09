@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec tsx src/server.ts",
     "build": "prisma generate && tsc",
-    "start": "node dist/server.js",
+    "start": "prisma generate && tsc && node dist/server.js",
     "test": "vitest run"
   },
   "keywords": [],
