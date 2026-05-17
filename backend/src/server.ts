@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const app: Application = express();
 
 app.use(cors({
-  origin: ['capacitor://localhost', 'http://localhost', 'http://localhost:5173'],
+  origin: ['capacitor://localhost', 'http://localhost', 'https://localhost', 'http://localhost:5173'],
   credentials: true,
 }));
 app.use(express.json());
