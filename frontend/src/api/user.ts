@@ -1,5 +1,3 @@
-import { Preferences } from "@capacitor/preferences";
-
 export interface User {
   id: number;
   username: string;
@@ -7,7 +5,7 @@ export interface User {
 }
 
 export const getUser = async () => {
-  const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const token = localStorage.getItem('habit-token');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/profile`, {
     method: 'GET',

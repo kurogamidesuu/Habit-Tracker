@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useUserStore } from "../store/useUserStore";
 import { useHabitStore } from "../store/useHabitStore";
-import { Preferences } from "@capacitor/preferences";
 
 const ProfilePage = () => {
   const { getUserDetails, username } = useUserStore();
@@ -16,7 +15,7 @@ const ProfilePage = () => {
 
   const handleLogout = async () => {
     location.replace('/login');
-    await Preferences.remove({ key: 'habit-token' });
+    localStorage.removeItem('habit-token');
   }
 
   return (

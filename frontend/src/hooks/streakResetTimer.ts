@@ -1,4 +1,3 @@
-import { App } from "@capacitor/app";
 import { useEffect } from "react"
 
 export const useResetStreak = (onMidnight: () => void) => {
@@ -15,15 +14,17 @@ export const useResetStreak = (onMidnight: () => void) => {
 
     const intervalId = setInterval(checkMidnight, 60000);
 
-    const appStateListener = App.addListener('appStateChange', ({ isActive }) => {
-      if (!isActive) {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
         checkMidnight();
       }
-    });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       clearInterval(intervalId);
-      appStateListener.then(listener => listener.remove());
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     }
   }, [onMidnight]);
 };

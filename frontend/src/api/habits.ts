@@ -1,5 +1,3 @@
-import { Preferences } from "@capacitor/preferences";
-
 export interface Habit {
   id: string;
   title: string;
@@ -9,7 +7,7 @@ export interface Habit {
 }
 
 export const fetchHabits = async () => {
-  const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const token = localStorage.getItem('habit-token');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits`, {
     method: 'GET',
@@ -30,7 +28,7 @@ export const fetchHabits = async () => {
 export const addHabit = async (title: string) => {
   if (!title) return "Please enter a title for the habit!";
 
-  const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const token = localStorage.getItem('habit-token');
   
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/add`, {
     method: 'POST',
@@ -50,7 +48,7 @@ export const addHabit = async (title: string) => {
 }
 
 export const deleteHabit = async (id: string) => {
-  const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const token = localStorage.getItem('habit-token');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/remove`, {
     method: 'DELETE',
@@ -70,7 +68,7 @@ export const deleteHabit = async (id: string) => {
 }
 
 export const completeHabit = async (id: string, dateString: string) => {
-  const { value: token } = await Preferences.get({ key: 'habit-token' });
+  const token = localStorage.getItem('habit-token');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
     method: 'PATCH',

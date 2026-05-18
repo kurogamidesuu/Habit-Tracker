@@ -1,4 +1,3 @@
-import { Preferences } from "@capacitor/preferences";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -28,10 +27,7 @@ const SignupPage = () => {
       const data = await res.json();
 
       if (data.success) {
-        await Preferences.set({
-          key: 'habit-token',
-          value: data.token,
-        });
+        localStorage.setItem('habit-token', data.token);
         navigate('/');
       } else {
         console.error(data.message);

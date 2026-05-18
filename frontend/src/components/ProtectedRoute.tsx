@@ -1,4 +1,3 @@
-import { Preferences } from "@capacitor/preferences";
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
@@ -7,7 +6,7 @@ const ProtectedRoute = ({ children }: Readonly<{ children: ReactNode }>) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { value } = await Preferences.get({ key: 'habit-token' });
+      const value = localStorage.getItem('habit-token');
 
       if (value) {
         setIsAuthenticated(true);
