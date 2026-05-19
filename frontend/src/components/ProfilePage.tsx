@@ -1,21 +1,18 @@
-import { useEffect } from "react";
-import { useUserStore } from "../store/useUserStore";
-import { useHabitStore } from "../store/useHabitStore";
+import { useNavigate } from "react-router-dom";
+import { useHabits } from "../hooks/useHabits";
+import { useUser } from "../hooks/useUser";
 
 const ProfilePage = () => {
-  const { getUserDetails, username } = useUserStore();
-  const { habits } = useHabitStore();
-
-  useEffect(() => {
-    getUserDetails();
-  }, [getUserDetails]);
+  const { username } = useUser();
+  const { habits } = useHabits();
+  const navigate = useNavigate();
 
   const habitsCount = habits.length;
   const bestMaxStreak = habits.reduce((max, habit) => Math.max(max, habit.maxStreak), 0);
 
   const handleLogout = async () => {
-    location.replace('/login');
     localStorage.removeItem('habit-token');
+    navigate('/login');
   }
 
   return (

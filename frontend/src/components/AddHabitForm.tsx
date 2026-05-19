@@ -1,7 +1,7 @@
 import { FiPlus } from "react-icons/fi"
 import { toast } from "react-toastify";
-import { useHabitStore } from "../store/useHabitStore";
 import { useForm } from "react-hook-form";
+import { useHabits } from "../hooks/useHabits";
 
 interface AddHabitProps {
   setShowForm: (value: React.SetStateAction<boolean>) => void;
@@ -13,13 +13,13 @@ interface AddHabitFormSchema {
 
 const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<AddHabitFormSchema>();
-  const { addNewHabit } = useHabitStore();
+  const { addNewHabit } = useHabits();
 
   const onSubmit = async (formData: AddHabitFormSchema) => {
     const { title } = formData;
     
     try {
-      await addNewHabit(title);
+      await addNewHabit.mutateAsync(title);
       toast.success("Habit added successfully!");
       setShowForm(false);
     } catch(e) {

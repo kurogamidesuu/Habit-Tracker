@@ -1,21 +1,18 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import HabitBox from "./HabitBox";
 import AddHabitForm from "./AddHabitForm";
 import { useResetStreak } from "../hooks/streakResetTimer";
-import { useHabitStore } from "../store/useHabitStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { HABITS_KEY, useHabits } from "../hooks/useHabits";
 
 const HabitsPage = () => {
   const [showForm, setShowForm] = useState(false);
-
-  const { habits, getAllHabits, isLoading } = useHabitStore();
+  const queryClient = useQueryClient();
+  const { habits, isLoading } = useHabits();
 
   useResetStreak(() => {
-    getAllHabits();
+    queryClient.invalidateQueries({ queryKey: HABITS_KEY });
   });
-
-  useEffect(() => {
-    getAllHabits();
-  }, [getAllHabits]);
 
   return (
     <main className="h-screen w-full bg-sky-950 flex flex-col items-center text-sky-50 py-4">

@@ -1,21 +1,17 @@
-import { useEffect } from "react"
 import HabitTab from "./HabitTab";
 import { useResetStreak } from "../hooks/streakResetTimer";
-import { useHabitStore } from "../store/useHabitStore";
-import { useUserStore } from "../store/useUserStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { HABITS_KEY, useHabits } from "../hooks/useHabits";
+import { useUser } from "../hooks/useUser";
 
 const HomePage = () => {
-  const { username, getUserDetails } = useUserStore();
-  const { habits, getAllHabits, isLoading } = useHabitStore();
+  const queryClient = useQueryClient();
+  const { username } = useUser();
+  const { habits, isLoading } = useHabits();
 
   useResetStreak(() => {
-    getAllHabits();
+    queryClient.invalidateQueries({ queryKey: HABITS_KEY })
   });
-
-  useEffect(() => {
-    getUserDetails();
-    getAllHabits();
-  }, [getUserDetails, getAllHabits]);
 
   const completedHabitsCount = habits.filter(h => h.isComplete).length;
   const totalHabitsCount = habits.length;

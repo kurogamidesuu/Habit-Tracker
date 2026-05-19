@@ -1,7 +1,7 @@
 import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useRef } from "react";
-import { useHabitStore } from "../store/useHabitStore";
+import { useHabits } from "../hooks/useHabits";
 
 interface HabitProps {
   id: string;
@@ -13,15 +13,14 @@ interface HabitProps {
 
 const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProps) => {
   const modalRef = useRef<HTMLDialogElement | null>(null);
-
-  const { removeHabit } = useHabitStore();
+  const { removeHabit } = useHabits();
 
   const openModal = () => modalRef.current?.showModal();
   const closeModal = () => modalRef.current?.close();
 
   const handleDelete = async () => {
     try {
-      await removeHabit(id);
+      await removeHabit.mutateAsync(id);
       toast.success("Habit deleted");
     } catch(e) {
       console.log(e);

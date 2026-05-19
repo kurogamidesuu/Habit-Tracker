@@ -1,18 +1,18 @@
 import { FaCheckCircle } from "react-icons/fa";
 import { type Habit } from "../api/habits";
-import { useHabitStore } from "../store/useHabitStore";
+import { useHabits } from "../hooks/useHabits";
 
 interface HabitProps {
   habit: Habit;
 }
 
 const HabitTab = ({ habit }: HabitProps) => {
-  const { markHabitComplete } = useHabitStore();
+  const { markHabitComplete } = useHabits();
 
   const handleCompleteHabit = async () => {
     try {
       const dateString = new Date().toLocaleDateString('en-CA');
-      await markHabitComplete(habit.id, dateString);
+      await markHabitComplete.mutateAsync({ id: habit.id, dateString });
     } catch(e) {
       console.log(e);
     }
