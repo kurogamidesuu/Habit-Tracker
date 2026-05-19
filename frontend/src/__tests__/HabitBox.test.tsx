@@ -1,13 +1,35 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import HabitBox from '../components/HabitBox';
-import { useHabitStore } from '../store/useHabitStore';
+import { useHabits } from '../hooks/useHabits';
+import type { UseMutationResult } from '@tanstack/react-query';
+import type { Habit } from '../api/habits';
 
-vi.mock('../store/useHabitStore', () => ({
-  useHabitStore: vi.fn(),
+vi.mock('../hooks/useHabits', () => ({
+  useHabits: vi.fn(),
 }));
 
-const mockedHabitStore = vi.mocked(useHabitStore);
+const mockedUseHabits = vi.mocked(useHabits);
+
+const mockMutation = <TData, TVariables, TContext = unknown>(mutateAsync = vi.fn()) => ({
+  mutateAsync,
+  mutate: vi.fn(),
+  isPending: false,
+  isError: false,
+  isSuccess: false,
+  isIdle: true,
+  error: null,
+  data: undefined,
+  reset: vi.fn(),
+  status: 'idle' as const,
+  variables: undefined,
+  context: undefined,
+  failureCount: 0,
+  failureReason: null,
+  submittedAt: 0,
+}) as unknown as UseMutationResult<TData, Error, TVariables, TContext>
+
+type HabitContext = { previousHabits: Habit[] | undefined };
 
 describe('HabitBox Component', () => {
   beforeAll(() => {
@@ -16,7 +38,14 @@ describe('HabitBox Component', () => {
   });
 
   it('should accurately display the habit title and streak numbers', () => {
-    mockedHabitStore.mockReturnValue({ removeHabit: vi.fn() });
+    mockedUseHabits.mockReturnValue({
+      removeHabit: mockMutation<string, string, HabitContext>(),
+      addNewHabit: mockMutation<string, string>(),
+      markHabitComplete: mockMutation<void, { id: string, dateString: string }, HabitContext>(),
+      habits: [],
+      isLoading: false,
+      error: null,
+    });
 
     render(
       <HabitBox
@@ -34,10 +63,15 @@ describe('HabitBox Component', () => {
   });
 
   it('should call removeHabit with the correct ID when "Yes" is clicked', async () => {
-    const mockRemoveHabit = vi.fn();
+    const mockMutateAsync = vi.fn();
 
-    mockedHabitStore.mockReturnValue({
-      removeHabit: mockRemoveHabit
+    mockedUseHabits.mockReturnValue({
+      removeHabit: mockMutation<string, string, HabitContext>(),
+      addNewHabit: mockMutation<string, string>(),
+      markHabitComplete: mockMutation<void, { id: string, dateString: string }, HabitContext>(),
+      habits: [],
+      isLoading: false,
+      error: null,
     });
 
     render(
@@ -51,14 +85,13 @@ describe('HabitBox Component', () => {
     );
 
     const buttons = screen.getAllByRole('button');
-    const trashButton = buttons[0];
-    fireEvent.click(trashButton);
+    fireEvent.click(buttons[0]);
 
     const yesButton = screen.getByText('Yes');
     fireEvent.click(yesButton);
 
-    expect(mockRemoveHabit).toHaveBeenCalledTimes(1);
-    expect(mockRemoveHabit).toHaveBeenCalledWith('test-id-67');
+    expect(mockMutateAsync).toHaveBeenCalledTimes(1);
+    expect(mockMutateAsync).toHaveBeenCalledWith('test-id-67');
   });
 
 });
