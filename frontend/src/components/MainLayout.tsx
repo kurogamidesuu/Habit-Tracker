@@ -3,7 +3,7 @@ import Navbar from "./Navbar"
 
 const MainLayout = () => {
   return (
-    <div>
+    <div className="bg-gradient-to-br from-sky-950 via-sky-900 to-sky-950">
       <Outlet />
       <Navbar />
     </div>

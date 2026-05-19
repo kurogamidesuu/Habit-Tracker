@@ -17,7 +17,7 @@ const HomePage = () => {
   const totalHabitsCount = habits.length;
 
   return (
-    <main className="h-screen w-full bg-sky-950 text-yellow-50 flex flex-col items-center py-3 px-4">
+    <main className="h-screen w-full md:w-1/2 md:mx-auto bg-sky-950 text-yellow-50 flex flex-col items-center py-3 px-4">
       <h1 className="text-[3.5em] font-bold text-transparent bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 bg-clip-text">KINTSUGI</h1>
       <h3>Welcome back, {username || 'User 67'}! Let's stay consistent.</h3>
 

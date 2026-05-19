@@ -29,19 +29,21 @@ const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full h-20 grid grid-cols-12 items-center">
-      <div className="col-span-10 px-8">
-        <label htmlFor="title" className="font-semibold text-lg">Title</label>
-        <input
-          id="title"
-          type="text"
-          {...register("title", { required: 'Title cannot be empty' })}
-          className="bg-sky-50 p-1 mx-2 text-zinc-900 rounded-md border-amber-600 focus:border-2 focus:outline-none"
-          maxLength={40}
-        />
-        {errors.title && <p className="ml-12 mt-1 text-red-500">{errors.title.message}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full h-20 grid grid-cols-12 items-center md:px-4">
+      <div className="col-span-10 px-8 flex flex-col gap-1">
+        <div className="flex items-center">
+          <label htmlFor="title" className="font-semibold">Title</label>
+          <input
+            id="title"
+            type="text"
+            {...register("title", { required: 'Title cannot be empty' })}
+            className="w-full max-w-110 bg-sky-50 p-1 mx-2 text-zinc-900 rounded-md border-amber-600 focus:border-2 focus:outline-none"
+            maxLength={40}
+          />
+        </div>
+        {errors.title && <p className="ml-12 text-red-500 text-xs">{errors.title.message}</p>}
       </div>
-      <button className="col-span-2 ml-1 bg-lime-600 h-8 w-8 flex items-center justify-center p-1 rounded-lg" disabled={isSubmitting}>
+      <button className="col-span-2 ml-1 bg-lime-600 h-8 w-8 md:w-12 hover:bg-lime-700 hover:text-sky-50/50 cursor-pointer flex items-center justify-center p-1 rounded-lg duration-200" disabled={isSubmitting}>
         <FiPlus className="h-full w-full" />
       </button>
     </form>

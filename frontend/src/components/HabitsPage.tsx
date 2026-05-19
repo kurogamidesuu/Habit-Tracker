@@ -15,11 +15,11 @@ const HabitsPage = () => {
   });
 
   return (
-    <main className="h-screen w-full bg-sky-950 flex flex-col items-center text-sky-50 py-4">
+    <main className="h-screen w-full md:w-1/2 mx-auto bg-sky-950 flex flex-col items-center text-sky-50 py-4">
       <h1 className="text-xl my-2">All your Habits in one place</h1>
 
       <button
-        className="w-[80%] h-10 bg-lime-600 rounded-md my-5"
+        className="w-[80%] h-10 bg-lime-600 rounded-md my-5 hover:bg-lime-700 cursor-pointer duration-200"
         onClick={() => setShowForm(p => !p)}
       >
         {showForm ? "Close" : "Add New Habit"}

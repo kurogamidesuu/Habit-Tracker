@@ -16,7 +16,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <main className="h-screen w-full bg-sky-950 text-slate-200 flex flex-col items-center gap-4 py-10 px-2">
+    <main className="h-screen w-full md:w-1/2 mx-auto bg-sky-950 text-slate-200 flex flex-col items-center gap-4 py-10 px-2">
       <h1 className="text-3xl font-bold">Your Profile</h1>
       <div className="flex flex-col items-center gap-1">
         <img src="/pfp.png" alt="profile picture" className="h-35 w-35" />
@@ -32,7 +32,7 @@ const ProfilePage = () => {
       <div className="w-[95%] flex flex-col items-center">
         <button
           onClick={handleLogout}
-          className="w-[95%] h-10 bg-red-600/60 rounded-md hover:bg-red-800/70"
+          className="w-[95%] h-10 bg-red-600/60 rounded-md hover:bg-red-800/70 cursor-pointer duration-200"
         >
           Logout
         </button>
