@@ -36,10 +36,10 @@ export const useHabits = () => {
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({ queryKey: HABITS_KEY });
       const previousHabits = queryClient.getQueryData<Habit[]>(HABITS_KEY);
-      queryClient.setQueryData<Habit[]>(HABITS_KEY, old => old?.map(h => h.id !== id ? {
+      queryClient.setQueryData<Habit[]>(HABITS_KEY, old => old?.map(h => h.id === id ? {
         ...h,
         isComplete: true,
-        currentSreak: h.currentStreak + 1,
+        currentStreak: h.currentStreak + 1,
         maxStreak: Math.max(h.maxStreak, h.currentStreak + 1),
       } : h) ?? []);
 
