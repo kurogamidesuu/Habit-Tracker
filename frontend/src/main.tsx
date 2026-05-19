@@ -3,19 +3,29 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { experimental_createQueryPersister } from '@tanstack/react-query-persist-client'
 
-const queryQlient = new QueryClient({
+const persister = experimental_createQueryPersister({
+  storage: window.localStorage,
+});
+
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 60 * 24,
       retry: 2,
+      persister: persister.persisterFn,
     }
   }
-})
+});
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryQlient}>
+    <QueryClientProvider
+      client={queryClient}
+    >
       <App />
     </QueryClientProvider>
   </StrictMode>,
