@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import HabitBox from '../components/HabitBox';
 import { useHabits } from '../hooks/useHabits';
 import type { UseMutationResult } from '@tanstack/react-query';
@@ -66,7 +66,7 @@ describe('HabitBox Component', () => {
     const mockMutateAsync = vi.fn();
 
     mockedUseHabits.mockReturnValue({
-      removeHabit: mockMutation<string, string, HabitContext>(),
+      removeHabit: mockMutation<string, string, HabitContext>(mockMutateAsync),
       addNewHabit: mockMutation<string, string>(),
       markHabitComplete: mockMutation<void, { id: string, dateString: string }, HabitContext>(),
       habits: [],
@@ -87,11 +87,13 @@ describe('HabitBox Component', () => {
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[0]);
 
-    const yesButton = screen.getByText('Yes');
+    const yesButton = await screen.findByText('Yes');
     fireEvent.click(yesButton);
 
-    expect(mockMutateAsync).toHaveBeenCalledTimes(1);
-    expect(mockMutateAsync).toHaveBeenCalledWith('test-id-67');
+    await waitFor(() => {
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1);
+      expect(mockMutateAsync).toHaveBeenCalledWith('test-id-67');
+    });
   });
 
 });
