@@ -1,17 +1,10 @@
 import HabitTab from "./HabitTab";
-import { useResetStreak } from "../hooks/streakResetTimer";
-import { useQueryClient } from "@tanstack/react-query";
-import { HABITS_KEY, useHabits } from "../hooks/useHabits";
+import { useHabits } from "../hooks/useHabits";
 import { useUser } from "../hooks/useUser";
 
 const HomePage = () => {
-  const queryClient = useQueryClient();
   const { username } = useUser();
   const { habits, isLoading } = useHabits();
-
-  useResetStreak(() => {
-    queryClient.invalidateQueries({ queryKey: HABITS_KEY })
-  });
 
   const completedHabitsCount = habits.filter(h => h.isComplete).length;
   const totalHabitsCount = habits.length;

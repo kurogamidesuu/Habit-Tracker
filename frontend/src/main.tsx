@@ -12,11 +12,12 @@ const persister = experimental_createQueryPersister({
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 2,
+      staleTime: 0,
       gcTime: 1000 * 60 * 60 * 24,
       retry: 2,
       refetchOnWindowFocus: true,
       refetchOnMount: true,
+      refetchOnReconnect: true,
       persister: persister.persisterFn,
     }
   }
