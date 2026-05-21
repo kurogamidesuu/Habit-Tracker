@@ -8,8 +8,9 @@ export interface Habit {
 
 export const fetchHabits = async () => {
   const token = localStorage.getItem('habit-token');
+  const today = new Date().toLocaleDateString('en-CA');
 
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits`, {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits?today=${today}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,

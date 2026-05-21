@@ -3,8 +3,12 @@ import { AuthRequest } from "../middleware/auth.middleware";
 import { prisma } from "../lib/prisma";
 
 export const getHabits = async (req: AuthRequest, res: Response) => {
-  const today = new Date().toLocaleDateString('en-CA');
-  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
+  const today = (req.query.today as string) || new Date().toLocaleDateString('en-CA');
+
+  const todayObj = new Date(today);
+  const yesterdayObj = new Date(todayObj);
+  yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+  const yesterday = yesterdayObj.toISOString().split('T')[0] as string;
 
   const habits = await prisma.habit.findMany({
     where: {
