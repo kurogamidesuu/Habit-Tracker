@@ -7,8 +7,11 @@ import MainLayout from "./components/MainLayout"
 import HabitsPage from "./components/HabitsPage"
 import ProfilePage from "./components/ProfilePage"
 import { Bounce, ToastContainer } from "react-toastify"
+import { useInstallPrompt } from "./hooks/useInstallPrompt"
+import InstallBanner from "./components/InstallBanner"
 
 const App = () => {
+  const { isInstallable, promptInstall } = useInstallPrompt()
   return (
     <BrowserRouter>
       <Routes>
@@ -26,6 +29,7 @@ const App = () => {
         </Route>
         
       </Routes>
+
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -35,7 +39,9 @@ const App = () => {
         pauseOnFocusLoss
         theme="light"
         transition={Bounce}
-        />
+      />
+
+      <InstallBanner isInstallable={isInstallable} promptInstall={promptInstall} />
     </BrowserRouter>
   )
 }
