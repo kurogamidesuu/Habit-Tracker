@@ -1,17 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { useHabits } from "../hooks/useHabits";
 import { useUser } from "../hooks/useUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProfilePage = () => {
   const { username } = useUser();
   const { habits } = useHabits();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const habitsCount = habits.length;
   const bestMaxStreak = habits.reduce((max, habit) => Math.max(max, habit.maxStreak), 0);
 
   const handleLogout = async () => {
+    queryClient.clear();
     localStorage.removeItem('habit-token');
+    localStorage.removeItem('tanstack-query-["user"]');
+    localStorage.removeItem('tanstack-query-["habits"]');
     navigate('/login');
   }
 
