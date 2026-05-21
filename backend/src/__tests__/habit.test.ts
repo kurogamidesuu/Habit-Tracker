@@ -45,9 +45,9 @@ describe('Habit API (Master Suite)', () => {
         .get('/habits')
         .set('Authorization', `Bearer ${userToken}`);
       
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-      expect(res.body.message).toBe('No habits yet');
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.allHabits).toEqual([]);
     });
 
     // Create new habit

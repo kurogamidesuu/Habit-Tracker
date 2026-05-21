@@ -63,9 +63,9 @@ export const getHabits = async (req: AuthRequest, res: Response) => {
     });
   }
 
-  res.status(400).json({
-    success: false,
-    message: 'No habits yet'
+  res.status(200).json({
+    success: true,
+    allHabits: []
   })
 }
 
