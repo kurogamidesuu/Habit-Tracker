@@ -8,6 +8,11 @@ export interface Habit {
 
 export const fetchHabits = async () => {
   const token = localStorage.getItem('habit-token');
+
+  if (!token) {
+    throw new Error('Not authenticated');
+  }
+
   const today = new Date().toLocaleDateString('en-CA');
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits?today=${today}`, {
@@ -30,6 +35,10 @@ export const addHabit = async (title: string) => {
   if (!title) return "Please enter a title for the habit!";
 
   const token = localStorage.getItem('habit-token');
+
+  if (!token) {
+    throw new Error('Not authenticated');
+  }
   
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/add`, {
     method: 'POST',
@@ -51,6 +60,10 @@ export const addHabit = async (title: string) => {
 export const deleteHabit = async (id: string) => {
   const token = localStorage.getItem('habit-token');
 
+  if (!token) {
+    throw new Error('Not authenticated');
+  }
+
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/remove`, {
     method: 'DELETE',
     headers: {
@@ -70,6 +83,10 @@ export const deleteHabit = async (id: string) => {
 
 export const completeHabit = async (id: string, dateString: string) => {
   const token = localStorage.getItem('habit-token');
+
+  if (!token) {
+    throw new Error('Not authenticated');
+  }
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
     method: 'PATCH',
