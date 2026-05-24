@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
         name: 'Kintsugi - Habit Tracker',
         short_name: 'Kintsugi',
@@ -33,7 +33,8 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
-      }
+      },
+      filename: 'sw.js',
     })
   ],
   test: {
