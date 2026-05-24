@@ -1,8 +1,11 @@
 import HabitTab from "./HabitTab";
 import { useHabits } from "../hooks/useHabits";
 import { useUser } from "../hooks/useUser";
+import { useNotifications } from "../hooks/useNotifications";
 
 const HomePage = () => {
+  useNotifications();
+  
   const { username } = useUser();
   const { habits, isLoading } = useHabits();
 
