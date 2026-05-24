@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import habitRouter from "./routes/habit.route";
 import userRouter from "./routes/user.route";
 import pushRouter from "./routes/push.route";
+import './lib/scheduler';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
