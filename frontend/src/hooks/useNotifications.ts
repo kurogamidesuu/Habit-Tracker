@@ -14,6 +14,7 @@ const firebaseConfig = {
 };
 
 export const useNotifications = () => {
+  console.log('useNotifications hook running');
   useEffect(() => {
     const setupNotifications = async () => {
       try {
