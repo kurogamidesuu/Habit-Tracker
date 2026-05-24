@@ -7,13 +7,9 @@ const sendNotificationToUser = async (fcmToken: string, title: string, body: str
     await messaging.send({
       token: fcmToken,
       notification: { title, body },
-      webpush: {
-        notification: {
-          title,
-          body,
-          icon: 'https://habit-tracker-chi-azure.vercel.app//pwa-192x192.png',
-          badge: 'https://habit-tracker-chi-azure.vercel.app//pwa-192x192.png',
-        }
+      data: {
+        title,
+        body,
       }
     });
   } catch (e) {
@@ -53,7 +49,7 @@ cron.schedule('* * * * *', async () => {
         if (incomplete.length > 0) {
           await sendNotificationToUser(
             fcmToken,
-            'Kintsugin Reminder',
+            'Kintsugi Reminder',
             `${sub.user.username}! Here to remind you that you have ${incomplete.length} habit${incomplete.length > 1 ? 's' : ''} left to complete today!`,
           );
         }

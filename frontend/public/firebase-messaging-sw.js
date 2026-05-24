@@ -21,11 +21,9 @@ if (firebaseConfig.apiKey) {
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
-    console.log("Received background message ", payload);
-
-    const notificationTitle = payload.notification?.title || "Kintsugi";
+    const notificationTitle = payload.data?.title || "Kintsugi";
     const notificationOptions = {
-      body: payload.notification?.body || "",
+      body: payload.data?.body || "",
       icon: "/pwa-192x192.png",
       badge: "/pwa-192x192.png",
     };
