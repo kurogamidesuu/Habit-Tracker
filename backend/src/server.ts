@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import habitRouter from "./routes/habit.route";
 import userRouter from "./routes/user.route";
+import pushRouter from "./routes/push.route";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/user', userRouter);
 app.use('/habits', habitRouter);
+app.use('/push', pushRouter);
 
 app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({
