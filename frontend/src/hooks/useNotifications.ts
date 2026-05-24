@@ -21,23 +21,16 @@ export const useNotifications = () => {
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return;
 
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        const configParams = new URLSearchParams({
+          apiKey: firebaseConfig.apiKey || '',
+          authDomain: firebaseConfig.authDomain || '',
+          projectId: firebaseConfig.projectId || '',
+          storageBucket: firebaseConfig.storageBucket || '',
+          messagingSenderId: firebaseConfig.messagingSenderId || '',
+          appId: firebaseConfig.appId || '',
+        }).toString();
 
-        const activeWorker = registration.active ??
-          await new Promise<ServiceWorker>(resolve => {
-            const worker = registration.installing ?? registration.waiting;
-            if (!worker) return;
-            worker.addEventListener('statechange', (e) => {
-              if ((e.target as ServiceWorker).state === 'activated') {
-                resolve(e.target as ServiceWorker);
-              }
-            });
-          });
-
-        activeWorker.postMessage({
-          type: 'FIREBASE_CONFIG',
-          config: firebaseConfig,
-        });
+        const registration = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${configParams}`);
 
         const token = await getToken(messaging, {
           vapidKey: VAPID_KEY,
