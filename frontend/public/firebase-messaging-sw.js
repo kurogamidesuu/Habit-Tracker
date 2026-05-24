@@ -16,14 +16,22 @@ const firebaseConfig = {
   appId: urlParams.get("appId"),
 };
 
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+
 if (firebaseConfig.apiKey) {
   firebase.initializeApp(firebaseConfig);
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
-    const notificationTitle = payload.data?.title || "Kintsugi";
+    const notificationTitle = payload.data?.title || payload.notification?.title || "Kintsugi";
     const notificationOptions = {
-      body: payload.data?.body || "",
+      body: payload.data?.body || payload.notification?.body || "",
       icon: "/pwa-192x192.png",
       badge: "/pwa-192x192.png",
     };
