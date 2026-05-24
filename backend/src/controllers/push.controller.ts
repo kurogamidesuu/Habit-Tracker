@@ -50,14 +50,17 @@ export const sendTestNotification = async (req: AuthRequest, res: Response) => {
     }
 
     const subscription = JSON.parse(sub.subscription);
+    console.log('Sending to token:', subscription.fcmToken?.slice(0, 20) + '...');
 
-    await messaging.send({
+    const result = await messaging.send({
       token: subscription.fcmToken,
       notification: {
         title: 'Kintsugi',
         body: 'Test notification working!',
       }
     });
+
+    console.log('FCM send result:', result);
 
     return res.status(200).json({
       success: true,
