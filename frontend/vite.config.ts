@@ -37,7 +37,6 @@ export default defineConfig({
           }
         ]
       },
-      filename: 'sw.js',
     })
   ],
   test: {
