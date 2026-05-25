@@ -202,3 +202,55 @@ export const completeHabit = async (req: AuthRequest, res: Response) => {
     })
   }
 }
+
+export const getHabitAnalytics = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const habitId = parseInt(id as string, 10);
+    if (isNaN(habitId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid habit ID format',
+      });
+    }
+
+    const habit = await prisma.habit.findUnique({
+      where: {
+        id: habitId,
+      },
+      include: {
+        completions: {
+          orderBy: {
+            dateString: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!habit) {
+      return res.status(404).json({
+        success: false,
+        message: 'Habit not found',
+      });
+    }
+
+    if (habit.userId !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access to this habit",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      habit,
+    });
+  } catch (e) {
+    console.log("Analytics Error:", e);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch habit analytics',
+    });
+  }
+}
