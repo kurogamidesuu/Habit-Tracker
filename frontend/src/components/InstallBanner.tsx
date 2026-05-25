@@ -21,24 +21,30 @@ const InstallBanner = ({ isInstallable, promptInstall }: InstallBannerProps) => 
   }
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] bg-sky-800 border-2 border-amber-400 p-4 rounded-xl shadow-lg flex items-center justify-between gap-2 z-50 text-sky-50">
-      <div>
-        <h3 className="font-bold text-amber-400">Install Kintsugi</h3>
-        <p className="text-sm">Add to home screen for quick access!</p>
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-sky-900/90 backdrop-blur-xl border border-sky-700/60 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-4 z-50 overflow-hidden">
+      
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500" />
+
+      <div className="flex-1 flex flex-col justify-center">
+        <h3 className="text-sm font-bold text-sky-50 tracking-wide">Install Kintsugi</h3>
+        <p className="text-[11px] text-sky-300/80 mt-0.5">Add to home screen for native access.</p>
       </div>
-      <button
-        onClick={promptInstall}
-        className="bg-amber-400 text-sky-950 px-4 py-2 rounded-md font-bold hover:bg-amber-300 transition-colors cursor-pointer"
-      >
-        Install
-      </button>
-      <button
-        onClick={handleDismiss}
-        className="text-slate-400 hover:text-amber-400 transition-colors cursor-pointer font-bold px-2 py-1 text-lg"
-        aria-label="Close banner"
-      >
-        <AiOutlineCloseCircle />
-      </button>
+
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          onClick={promptInstall}
+          className="bg-amber-400/10 border border-amber-400/30 text-amber-400 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-400/20 hover:text-amber-300 transition-colors shadow-sm"
+        >
+          Install
+        </button>
+        <button
+          onClick={handleDismiss}
+          className="text-sky-400/60 hover:text-sky-300 transition-colors p-1"
+          aria-label="Close banner"
+        >
+          <AiOutlineCloseCircle className="text-[22px]" />
+        </button>
+      </div>
     </div>
   )
 }

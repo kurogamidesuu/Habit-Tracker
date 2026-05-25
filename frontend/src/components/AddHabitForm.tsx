@@ -12,15 +12,14 @@ interface AddHabitFormSchema {
 }
 
 const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<AddHabitFormSchema>();
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AddHabitFormSchema>();
   const { addNewHabit } = useHabits();
 
   const onSubmit = async (formData: AddHabitFormSchema) => {
-    const { title } = formData;
-    
     try {
-      await addNewHabit.mutateAsync(title);
+      await addNewHabit.mutateAsync(formData.title);
       toast.success("Habit added successfully!");
+      reset();
       setShowForm(false);
     } catch(e) {
       console.log(e);
@@ -29,22 +28,34 @@ const AddHabitForm = ({ setShowForm }: AddHabitProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full h-20 grid grid-cols-12 items-center md:px-4">
-      <div className="col-span-10 px-8 flex flex-col gap-1">
-        <div className="flex items-center">
-          <label htmlFor="title" className="font-semibold">Title</label>
-          <input
-            id="title"
-            type="text"
-            {...register("title", { required: 'Title cannot be empty' })}
-            className="w-full max-w-110 bg-sky-50 p-1 mx-2 text-zinc-900 rounded-md border-amber-600 focus:border-2 focus:outline-none"
-            maxLength={40}
-          />
-        </div>
-        {errors.title && <p className="ml-12 text-red-500 text-xs">{errors.title.message}</p>}
+    <form 
+      onSubmit={handleSubmit(onSubmit)} 
+      className="w-full bg-sky-900/30 border border-sky-800/40 rounded-xl p-3 shadow-md mb-4 flex items-start gap-3 transition-all"
+    >
+      <div className="flex-1 flex flex-col gap-1">
+        <input
+          id="title"
+          type="text"
+          placeholder="What do you want to build?"
+          {...register("title", { required: 'Please enter a habit title' })}
+          className="w-full bg-sky-950/50 text-sky-50 text-sm px-4 py-2.5 rounded-lg border border-sky-800/60 focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 focus:outline-none placeholder-sky-400/40 transition-all"
+          maxLength={40}
+        />
+        {errors.title && (
+          <p className="text-red-400/90 text-[10px] pl-1 font-medium">{errors.title.message}</p>
+        )}
       </div>
-      <button className="col-span-2 ml-1 bg-lime-600 h-8 w-8 md:w-12 hover:bg-lime-700 hover:text-sky-50/50 cursor-pointer flex items-center justify-center p-1 rounded-lg duration-200" disabled={isSubmitting}>
-        <FiPlus className="h-full w-full" />
+
+      <button 
+        type="submit"
+        disabled={isSubmitting}
+        className={`h-10 w-12 rounded-lg flex items-center justify-center shrink-0 border transition-all duration-200 ${
+          isSubmitting 
+            ? "bg-sky-900/40 border-sky-800 text-sky-600 cursor-not-allowed" 
+            : "bg-lime-500/20 border-lime-500/40 text-lime-400 hover:bg-lime-500/30 hover:text-lime-300 shadow-sm cursor-pointer"
+        }`}
+      >
+        <FiPlus className={`text-xl ${isSubmitting ? "animate-spin" : ""}`} />
       </button>
     </form>
   )

@@ -14,7 +14,6 @@ const firebaseConfig = {
 };
 
 export const useNotifications = () => {
-  console.log('useNotifications hook running');
   useEffect(() => {
     const setupNotifications = async () => {
       try {
@@ -56,8 +55,6 @@ export const useNotifications = () => {
             timezone,
           })
         });
-
-        console.log('Push subscription saved successfully');
       } catch (e) {
         console.error('Failed to setup notifications:', e);
       }
