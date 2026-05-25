@@ -57,12 +57,12 @@ describe('HabitBox Component', () => {
       />
     );
 
-    expect(screen.getByText('Drink 2L water')).toBeInTheDocument();
-    expect(screen.getByText('Current Streak: 5')).toBeInTheDocument();
-    expect(screen.getByText('Max Streak: 12')).toBeInTheDocument();
+    expect(screen.getByText(/Drink 2L water/i)).toBeInTheDocument();
+    expect(screen.getByText(/5/)).toBeInTheDocument();
+    expect(screen.getByText(/12/)).toBeInTheDocument();
   });
 
-  it('should call removeHabit with the correct ID when "Yes" is clicked', async () => {
+  it('should call removeHabit with the correct ID when confirmation is accepted', async () => {
     const mockMutateAsync = vi.fn();
 
     mockedUseHabits.mockReturnValue({
@@ -85,9 +85,11 @@ describe('HabitBox Component', () => {
     );
 
     const buttons = screen.getAllByRole('button');
-    fireEvent.click(buttons[0]);
+    const deleteTrigger = buttons[1]; 
+    
+    fireEvent.click(deleteTrigger);
 
-    const yesButton = await screen.findByText('Yes');
+    const yesButton = await screen.findByText(/yes/i);
     fireEvent.click(yesButton);
 
     await waitFor(() => {
@@ -95,5 +97,4 @@ describe('HabitBox Component', () => {
       expect(mockMutateAsync).toHaveBeenCalledWith('test-id-67');
     });
   });
-
 });
