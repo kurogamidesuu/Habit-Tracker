@@ -6,6 +6,17 @@ export interface Habit {
   isComplete: boolean;
 }
 
+export interface HabitLog {
+  id: number;
+  dateString: string;
+  createdAt: string;
+}
+
+export interface HabitWithAnalytics extends Habit {
+  createdAt: string;
+  completions: HabitLog[];
+}
+
 export const fetchHabits = async () => {
   const token = localStorage.getItem('habit-token');
 
@@ -103,4 +114,27 @@ export const completeHabit = async (id: string, dateString: string) => {
   }
 
   return data;
+}
+
+export const fetchHabitAnalytics = async (id: string): Promise<HabitWithAnalytics> => {
+  const token = localStorage.getItem('habit-token');
+
+  if (!token) {
+    throw new Error('Not Authenticated');
+  }
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/${id}/analytics`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  });
+
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(data.message || 'Something went wrong');
+  }
+
+  return data.habit;
 }
