@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { FaTrash, FaChartBar, FaChevronDown } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useHabits } from "../hooks/useHabits";
+import { FaFireFlameCurved } from "react-icons/fa6";
+import AnalyticsPanel from "./AnalyticsPanel";
 
 interface HabitProps {
   id: string;
@@ -39,13 +41,15 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProp
   };
 
   return (
-    <div className="w-full flex flex-col shadow-md shadow-sky-950/40 rounded-xl overflow-hidden group">
+    <div className="w-full flex flex-col shadow-md shadow-sky-950/40 rounded-xl group">
       <div
         onClick={() => setShowAnalytics((p) => !p)}
         className={`w-full h-18 bg-sky-900/40 px-4 py-2 flex justify-between items-center border-l-[6px] transition-all duration-200 select-none ${
           showAnalytics 
-            ? "bg-sky-900/60 border-amber-500" 
-            : isComplete ? "border-lime-500 hover:bg-sky-900/50" : "border-transparent hover:bg-sky-900/50"
+            ? "bg-sky-900/60 border-amber-500 rounded-t-xl" 
+            : isComplete
+              ? "border-lime-500 hover:bg-sky-900/50 rounded-xl"
+              : "border-transparent hover:bg-sky-900/50 rounded-xl"
         }`}
       >
         <div className="flex items-center gap-3 w-[52%]">
@@ -54,7 +58,12 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProp
         </div>
 
         <div className="text-[0.78em] text-sky-200/70 font-sans leading-tight shrink-0">
-          <p>Current: <span className="font-semibold text-sky-50">{currentStreak}d</span></p>
+          <p className="flex gap-1">Current:
+            <span className="font-semibold text-sky-50">
+              {currentStreak}d
+            </span>
+            {currentStreak > 0 && <FaFireFlameCurved className="text-amber-400" />}
+          </p>
           <p>Max: <span className="font-semibold text-sky-50">{maxStreak}d</span></p>
         </div>
 
@@ -97,6 +106,14 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProp
             </button>
           </div>
         </dialog>
+      </div>
+
+      <div
+        className={`transition-all duration-300 overflow-hidden ${
+          showAnalytics ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        {showAnalytics && <AnalyticsPanel habitId={id} />}
       </div>
     </div>
   );
