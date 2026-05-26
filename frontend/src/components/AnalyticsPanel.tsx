@@ -18,13 +18,15 @@ const AnalyticsPanel = ({ habitId }: AnalyticsPanelProps) => {
   if (!analytics) return null;
 
   const { totalVolume, monthlyCompletionRate, chronotype, monthMatrix, weekdayFrictionMap } = analytics;
-  const currMonth = new Date().toLocaleString('default', { month: 'long' });
+  const today = new Date();
+  const currMonth = today.toLocaleString('default', { month: 'long' });
+  const currDay = today.getDate();
 
   return (
     <div className="bg-sky-950/60 border-l-[6px] border-amber-500 px-4 py-4 flex flex-col gap-4 rounded-b-xl">
 
       {/* Top Stats Row */}
-      <div className="grid grid-cols-3 gap-4 px-4">
+      <div className="grid grid-cols-3 gap-4">
 
         {/* Total Completions */}
         <div className="bg-sky-900/50 rounded-lg p-2 flex flex-col items-center border border-amber-500/60">
@@ -60,7 +62,10 @@ const AnalyticsPanel = ({ habitId }: AnalyticsPanelProps) => {
                   : isCompleted
                     ? 'bg-amber-400 text-sky-950'
                     : 'bg-sky-800/50 text-sky-500'
-                }`}
+                }
+                ${currDay === day
+                  ? 'border-2 border-amber-900/70'
+                  : ''}`}
             >
               {day}
             </div>

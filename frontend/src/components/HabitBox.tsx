@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { FaTrash, FaChartBar, FaChevronDown } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useHabits } from "../hooks/useHabits";
-import { FaFireFlameCurved } from "react-icons/fa6";
 import AnalyticsPanel from "./AnalyticsPanel";
 
 interface HabitProps {
@@ -59,10 +58,9 @@ const HabitBox = ({ id, title, currentStreak, maxStreak, isComplete }: HabitProp
 
         <div className="text-[0.78em] text-sky-200/70 font-sans leading-tight shrink-0">
           <p className="flex gap-1">Current:
-            <span className="font-semibold text-sky-50">
+            <span className={`font-semibold ${currentStreak > 0 ? 'text-sky-50' : 'text-sky-50/50'}`}>
               {currentStreak}d
             </span>
-            {currentStreak > 0 && <FaFireFlameCurved className="text-amber-400" />}
           </p>
           <p>Max: <span className="font-semibold text-sky-50">{maxStreak}d</span></p>
         </div>
