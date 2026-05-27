@@ -33,6 +33,9 @@ cron.schedule('* * * * *', async () => {
       const { subscription, timezone } = sub;
       const fcmToken = JSON.parse(subscription).fcmToken;
 
+      const dailyReminderTime = sub.user.dailyReminderTime;
+      const streakWarningEnabled = sub.user.streakWarningEnabled;
+
       const now = new Date();
       const userTime = new Intl.DateTimeFormat('en-CA', {
         timeZone: timezone,
@@ -44,7 +47,10 @@ cron.schedule('* * * * *', async () => {
       const hour = parseInt(userTime.find(p => p.type === 'hour')!.value);
       const minute = parseInt(userTime.find(p => p.type === 'minute')!.value);
 
-      if (hour === 20 && minute === 0) {
+      const dailyReminderTimeHour = parseInt(dailyReminderTime!.slice(0, 2));
+      const dailyReminderTimeMinute = parseInt(dailyReminderTime!.slice(3));
+
+      if (hour === dailyReminderTimeHour && minute === dailyReminderTimeMinute) {
         const incomplete = sub.user.habits.filter(h => !h.isComplete);
         if (incomplete.length > 0) {
           await sendNotificationToUser(
@@ -55,7 +61,7 @@ cron.schedule('* * * * *', async () => {
         }
       }
 
-      if (hour === 23 && minute === 0) {
+      if (streakWarningEnabled && (hour === 23 && minute === 0)) {
         const atRisk = sub.user.habits.filter(h => !h.isComplete && h.currentStreak > 0);
         if (atRisk.length > 0) {
           await sendNotificationToUser(
