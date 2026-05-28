@@ -2,6 +2,9 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  notificationsEnabled: boolean;
+  streakWarningEnabled: boolean;
+  dailyReminderTime: string;
 }
 
 export const getUser = async () => {

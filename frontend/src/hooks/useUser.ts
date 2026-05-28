@@ -12,5 +12,8 @@ export const useUser = () => {
   return {
     username: data?.username ?? '',
     isLoadingUser: isLoading,
+    notificationsEnabled: data?.notificationsEnabled,
+    streakWarningEnabled: data?.streakWarningEnabled,
+    dailyReminderTime: data?.dailyReminderTime,
   }
 }
