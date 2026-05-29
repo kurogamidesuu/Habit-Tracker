@@ -136,9 +136,9 @@ export const updatePreferences = async (req: AuthRequest, res: Response) => {
     await prisma.user.update({
       where: { id },
       data: {
-        notificationsEnabled: notificationsEnabled ?? false,
-        streakWarningEnabled: streakWarningEnabled ?? true,
-        dailyReminderTime: dailyReminderTime ?? '20:00',
+        ...(notificationsEnabled !== undefined && { notificationsEnabled }),
+        ...(streakWarningEnabled !== undefined && { streakWarningEnabled }),
+        ...(dailyReminderTime !== undefined && { dailyReminderTime }),
       }
     });
 
