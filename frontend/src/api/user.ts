@@ -26,3 +26,23 @@ export const getUser = async () => {
 
   return data.user as User;
 }
+
+export const updateUserPreferences = async (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>) => {
+  const token = localStorage.getItem('habit-token');
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/preferences`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(preferences)
+  });
+
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to update preferences');
+  }
+
+  return data;
+}
