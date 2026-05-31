@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { experimental_createQueryPersister } from '@tanstack/react-query-persist-client'
+import { AuthProvider } from './context/AuthContext.tsx'
 
 const persister = experimental_createQueryPersister({
   storage: window.localStorage,
@@ -26,10 +27,12 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider
-      client={queryClient}
-    >
-      <App />
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider
+        client={queryClient}
+      >
+        <App />
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>,
 )
