@@ -32,22 +32,35 @@ export const registerUser = async (req: Request, res: Response) => {
       }
     });
 
-    const token = jwt.sign(
-      {
-        id: newUser.id,
-        email: newUser.email,
-        username: newUser.username,
-      },
+    const payload = {
+      id: newUser.id,
+      email: newUser.email,
+      username: newUser.username
+    };
+
+    const accessToken = jwt.sign(
+      payload,
       process.env.JWT_SECRET!,
-      {
-        expiresIn: '7d'
-      }
+      { expiresIn: '15m' }
     );
+
+    const refreshToken = jwt.sign(
+      payload,
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: 60 * 60 * 24 * 7 }
+    );
+
+    res.cookie('habit-refresh-token', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
 
     return res.status(200).json({
       success: true,
       message: 'Created account successfully!',
-      token
+      token: accessToken
     })
 
   } catch(e) {
@@ -78,23 +91,36 @@ export const loginUser = async (req: Request, res: Response) => {
   const match = await bcrypt.compare(password, user.password);
 
   if (match) {
-    const token = jwt.sign(
-    {
+    const payload = {
       id: user.id,
       email: user.email,
       username: user.username
-    },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: '7d'
-    }
-  );
+    };
 
-  return res.status(200).json({
-    success: true,
-    message: 'Logged in successfully',
-    token: token,
-  });
+    const accessToken = jwt.sign(
+      payload,
+      process.env.JWT_SECRET!,
+      { expiresIn: '15m' }
+    );
+
+    const refreshToken = jwt.sign(
+      payload,
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: 60 * 60 * 24 * 7 }
+    );
+
+    res.cookie('habit-refresh-token', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Logged in successfully',
+      token: accessToken,
+    });
   } else {
     return res.status(401).json({
       success: false,
