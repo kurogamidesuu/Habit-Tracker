@@ -5,11 +5,11 @@ import { useAuth } from "./useAuth"
 export const USER_KEY = ['user']
 
 export const useUser = () => {
-  const { accessToken } = useAuth();
+  const { accessToken, setAccessToken } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: USER_KEY,
-    queryFn: () => getUser(accessToken),
+    queryFn: () => getUser(accessToken, setAccessToken),
   });
 
   return {

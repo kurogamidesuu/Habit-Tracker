@@ -4,11 +4,11 @@ import { calculateAnalytics } from "../lib/analytics";
 import { useAuth } from "./useAuth";
 
 export const useHabitAnalytics = (habitId: string) => {
- const { accessToken } = useAuth();
+ const { accessToken, setAccessToken } = useAuth();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['analytics', habitId],
-    queryFn: () => fetchHabitAnalytics(habitId, accessToken),
+    queryFn: () => fetchHabitAnalytics(habitId, accessToken, setAccessToken),
     staleTime: 1000 * 60 * 5,
   });
 

@@ -6,20 +6,20 @@ export const HABITS_KEY = ['habits']
 
 export const useHabits = () => {
   const queryClient = useQueryClient();
-  const { accessToken } = useAuth();
+  const { accessToken, setAccessToken } = useAuth();
 
   const { data: habits = [], isLoading, error } = useQuery({
     queryKey: HABITS_KEY,
-    queryFn: () => fetchHabits(accessToken),
+    queryFn: () => fetchHabits(accessToken, setAccessToken),
   });
 
   const addNewHabit = useMutation({
-    mutationFn:(title: string) => addHabit(title, accessToken),
+    mutationFn:(title: string) => addHabit(title, accessToken, setAccessToken),
     onSettled: () => queryClient.invalidateQueries({ queryKey: HABITS_KEY })
   });
 
   const removeHabit = useMutation({
-    mutationFn: (id: string) => deleteHabit(id, accessToken),
+    mutationFn: (id: string) => deleteHabit(id, accessToken, setAccessToken),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: HABITS_KEY });
       const previousHabits = queryClient.getQueryData<Habit[]>(HABITS_KEY);
@@ -34,7 +34,7 @@ export const useHabits = () => {
   });
 
   const markHabitComplete = useMutation({
-    mutationFn: ({ id, dateString }: { id: string, dateString: string }) => completeHabit(id, dateString, accessToken),
+    mutationFn: ({ id, dateString }: { id: string, dateString: string }) => completeHabit(id, dateString, accessToken, setAccessToken),
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({ queryKey: HABITS_KEY });
       const previousHabits = queryClient.getQueryData<Habit[]>(HABITS_KEY);

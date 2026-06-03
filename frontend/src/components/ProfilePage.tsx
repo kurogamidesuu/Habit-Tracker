@@ -37,7 +37,7 @@ const ProfilePage = () => {
   }
 
   const mutation = useMutation({
-    mutationFn: (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>) => updateUserPreferences(preferences, accessToken),
+    mutationFn: (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>) => updateUserPreferences(preferences, accessToken, setAccessToken),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEY });
       

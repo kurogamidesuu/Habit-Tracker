@@ -1,3 +1,5 @@
+import { apiClient } from "../lib/apiClient";
+
 export interface Habit {
   id: string;
   title: string;
@@ -17,114 +19,90 @@ export interface HabitWithAnalytics extends Habit {
   completions: HabitLog[];
 }
 
-export const fetchHabits = async (token: string | null) => {
-  if (!token) {
-    throw new Error('Not authenticated');
-  }
-
+export const fetchHabits = async (
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+) => {
   const today = new Date().toLocaleDateString('en-CA');
 
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits?today=${today}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const data = await apiClient(
+    `/habits?today=${today}`,
+    { method: 'GET' },
+    token,
+    setAccessToken
+  );
 
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(data.message || 'Something went wrong');
-  }
-  
   return data.allHabits as Habit[];
 }
 
-export const addHabit = async (title: string, token: string | null) => {
+export const addHabit = async (
+  title: string,
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+) => {
   if (!title) return "Please enter a title for the habit!";
 
-  if (!token) {
-    throw new Error('Not authenticated');
-  }
-  
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/add`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+  const data = await apiClient(
+    `/habits/add`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ title }),
     },
-    body: JSON.stringify({title}),
-  });
-
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(data.message || 'Something went wrong');
-  }
+    token,
+    setAccessToken,
+  );
 
   return data.message;
 }
 
-export const deleteHabit = async (id: string, token: string | null) => {
-  if (!token) {
-    throw new Error('Not authenticated');
-  }
-
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/remove`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+export const deleteHabit = async (
+  id: string,
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+) => {
+  const data = await apiClient(
+    `/habits/remove`,
+    {
+      method: 'DELETE',
+      body: JSON.stringify({ id }),
     },
-    body: JSON.stringify({ id }),
-  });
-
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(data.message || 'Something went wrong');
-  }
+    token,
+    setAccessToken
+  );
 
   return data.message;
 }
 
-export const completeHabit = async (id: string, dateString: string, token: string | null) => {
-  if (!token) {
-    throw new Error('Not authenticated');
-  }
-
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/complete`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+export const completeHabit = async (
+  id: string,
+  dateString: string,
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+) => {
+  const data = await apiClient(
+    `/habits/complete`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ id, dateString }),
     },
-    body: JSON.stringify({ id, dateString }),
-  });
-
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(data.message || 'Something went wrong');
-  }
+    token,
+    setAccessToken,
+  );
 
   return data;
 }
 
-export const fetchHabitAnalytics = async (id: string, token: string | null): Promise<HabitWithAnalytics> => {
-  if (!token) {
-    throw new Error('Not Authenticated');
-  }
-
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/habits/${id}/analytics`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    }
-  });
-
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(data.message || 'Something went wrong');
-  }
+export const fetchHabitAnalytics = async (
+  id: string,
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+): Promise<HabitWithAnalytics> => {
+  const data = await apiClient(
+    `/habits/${id}/analytics`,
+    { method: 'GET' },
+    token,
+    setAccessToken,
+  );
 
   return data.habit;
 }

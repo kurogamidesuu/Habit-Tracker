@@ -19,7 +19,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const bootstrapAuth = async () => {
       try {
-        const res = await fetch(`${import.meta.env.BACKEND_BASE_URL}/auth/refresh`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/refresh`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' }
