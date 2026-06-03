@@ -17,9 +17,7 @@ export interface HabitWithAnalytics extends Habit {
   completions: HabitLog[];
 }
 
-export const fetchHabits = async () => {
-  const token = localStorage.getItem('habit-token');
-
+export const fetchHabits = async (token: string | null) => {
   if (!token) {
     throw new Error('Not authenticated');
   }
@@ -42,10 +40,8 @@ export const fetchHabits = async () => {
   return data.allHabits as Habit[];
 }
 
-export const addHabit = async (title: string) => {
+export const addHabit = async (title: string, token: string | null) => {
   if (!title) return "Please enter a title for the habit!";
-
-  const token = localStorage.getItem('habit-token');
 
   if (!token) {
     throw new Error('Not authenticated');
@@ -68,9 +64,7 @@ export const addHabit = async (title: string) => {
   return data.message;
 }
 
-export const deleteHabit = async (id: string) => {
-  const token = localStorage.getItem('habit-token');
-
+export const deleteHabit = async (id: string, token: string | null) => {
   if (!token) {
     throw new Error('Not authenticated');
   }
@@ -92,9 +86,7 @@ export const deleteHabit = async (id: string) => {
   return data.message;
 }
 
-export const completeHabit = async (id: string, dateString: string) => {
-  const token = localStorage.getItem('habit-token');
-
+export const completeHabit = async (id: string, dateString: string, token: string | null) => {
   if (!token) {
     throw new Error('Not authenticated');
   }
@@ -116,9 +108,7 @@ export const completeHabit = async (id: string, dateString: string) => {
   return data;
 }
 
-export const fetchHabitAnalytics = async (id: string): Promise<HabitWithAnalytics> => {
-  const token = localStorage.getItem('habit-token');
-
+export const fetchHabitAnalytics = async (id: string, token: string | null): Promise<HabitWithAnalytics> => {
   if (!token) {
     throw new Error('Not Authenticated');
   }

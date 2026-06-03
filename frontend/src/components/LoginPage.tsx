@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiMail, FiLock } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginFormSchema {
   email: string;
@@ -11,6 +12,7 @@ interface LoginFormSchema {
 const LoginPage = () => {
   const navigate = useNavigate();
   const { handleSubmit, register, formState: { errors, isSubmitting } } = useForm<LoginFormSchema>();
+  const { setAccessToken } = useAuth();
 
   const onSubmit = async (formData: LoginFormSchema) => {
     const { email, password } = formData;
@@ -25,7 +27,7 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (data.success) {
-        localStorage.setItem('habit-token', data.token);
+        setAccessToken(data.token);
         navigate('/');
       } else {
         toast.error(data.message);

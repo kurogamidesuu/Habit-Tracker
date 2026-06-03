@@ -7,9 +7,7 @@ export interface User {
   dailyReminderTime: string;
 }
 
-export const getUser = async () => {
-  const token = localStorage.getItem('habit-token');
-
+export const getUser = async (token: string | null) => {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/profile`, {
     method: 'GET',
     headers: {
@@ -27,9 +25,7 @@ export const getUser = async () => {
   return data.user as User;
 }
 
-export const updateUserPreferences = async (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>) => {
-  const token = localStorage.getItem('habit-token');
-
+export const updateUserPreferences = async (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>, token: string | null) => {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/preferences`, {
     method: 'PUT',
     headers: {

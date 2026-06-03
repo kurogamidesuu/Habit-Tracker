@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { getUser } from "../api/user"
+import { useAuth } from "./useAuth"
 
 export const USER_KEY = ['user']
 
 export const useUser = () => {
+  const { accessToken } = useAuth();
+
   const { data, isLoading } = useQuery({
     queryKey: USER_KEY,
-    queryFn: getUser,
+    queryFn: () => getUser(accessToken),
   });
 
   return {

@@ -1,29 +1,20 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const ProtectedRoute = ({ children }: Readonly<{ children: ReactNode }>) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { accessToken, isAuthLoading } = useAuth();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const value = localStorage.getItem('habit-token');
-
-      if (value) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  if (isAuthenticated == null) {
-    return <div className="h-screen w-full bg-sky-200/70 flex items-center justify-center">Loading...</div>
+  if (isAuthLoading) {
+    return (
+      <div className="h-screen w-full bg-sky-950 flex items-center justify-center text-sky-100 font-medium">
+        Loading Kintsugi...
+      </div>
+    );
   }
 
-  if (isAuthenticated == false) {
-    return <Navigate to='/login' replace />
+  if (!accessToken) {
+    return <Navigate to='/login' replace />;
   }
 
   return children;

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
 
 interface SignupFormSchema {
   username: string;
@@ -12,6 +13,8 @@ interface SignupFormSchema {
 const SignupPage = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignupFormSchema>();
+  const { setAccessToken } = useAuth();
+  
 
   const onSubmit = async (formData: SignupFormSchema) => {
     const { username, email, password } = formData;
@@ -26,7 +29,7 @@ const SignupPage = () => {
       const data = await res.json();
 
       if (data.success) {
-        localStorage.setItem('habit-token', data.token);
+        setAccessToken(data.token);
         navigate('/');
       } else {
         toast.error(data.message);

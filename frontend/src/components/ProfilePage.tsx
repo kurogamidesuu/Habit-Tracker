@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useHabits } from "../hooks/useHabits";
 import { useUser, USER_KEY } from "../hooks/useUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateUserPreferences } from "../api/user";
+import { updateUserPreferences, type User } from "../api/user";
 import { FaSignOutAlt, FaTrophy, FaChartLine, FaCog, FaBell, FaChevronRight, FaExclamationTriangle, FaClock, FaCheckCircle, FaSpinner } from "react-icons/fa";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useAuth } from "../hooks/useAuth";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ const ProfilePage = () => {
     streakWarningEnabled, 
     dailyReminderTime 
   } = useUser();
+  const { accessToken, setAccessToken } = useAuth();
 
   const [localTime, setLocalTime] = useState("20:00");
   const [prevDailyReminderTime, setPrevDailyReminderTime] = useState<string | undefined>(undefined);
@@ -34,13 +37,15 @@ const ProfilePage = () => {
   }
 
   const mutation = useMutation({
-    mutationFn: updateUserPreferences,
+    mutationFn: (preferences: Partial<Omit<User, 'id' | 'username' | 'email'>>) => updateUserPreferences(preferences, accessToken),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEY });
       
       setShowSavedToast(true);
-      const timer = setTimeout(() => setShowSavedToast(false), 2000);
-      return () => clearTimeout(timer);
+      setTimeout(() => setShowSavedToast(false), 2000);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to save preferences.");
     }
   });
 
@@ -48,11 +53,32 @@ const ProfilePage = () => {
   const bestMaxStreak = habits.reduce((max, habit) => Math.max(max, habit.maxStreak), 0);
 
   const handleLogout = async () => {
-    queryClient.clear();
-    localStorage.removeItem('habit-token');
-    localStorage.removeItem('tanstack-query-["user"]');
-    localStorage.removeItem('tanstack-query-["habits"]');
-    navigate('/login');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await res.json();
+      if (!data.success) {
+        console.error(data.message || 'Failed to logout');
+        toast.error('Failed to logout! Try again.');
+        return;
+      }
+      
+      // Clean up application memory and queries
+      queryClient.clear();
+      localStorage.removeItem('tanstack-query-["user"]');
+      localStorage.removeItem('tanstack-query-["habits"]');
+      setAccessToken(null);
+      navigate('/login');
+    } catch (e) {
+      console.error('Something went wrong', e);
+      toast.error('Failed to logout! Try again.');
+    }
   };
 
   const togglePreference = (key: 'notificationsEnabled' | 'streakWarningEnabled', currentVal: boolean | undefined) => {
