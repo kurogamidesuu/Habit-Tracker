@@ -180,3 +180,82 @@ export const updatePreferences = async (req: AuthRequest, res: Response) => {
     })
   }
 }
+
+export const changeUsername = async (req: AuthRequest, res: Response) => {
+  const { id } = req.user;
+  const { newUsername } = req.body;
+
+  if (!newUsername || newUsername.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      message: 'Username cannot be empty',
+    })
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id },
+      data: {
+        username: newUsername,
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Username updated successfully',
+    });
+  } catch (e) {
+    console.error('Failed to change username', e);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to change username',
+    });
+  }
+}
+
+export const changePassword = async (req: AuthRequest, res: Response) => {
+  const { id } = req.user;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+
+    if (match) {
+      const newHash = await bcrypt.hash(newPassword, 10);
+
+      await prisma.user.update({
+        where: { id },
+        data: {
+          password: newHash,
+        },
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Password updated successfully',
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid Password',
+      });
+    }
+  } catch (e) {
+    console.error('Failed to change password');
+    res.status(500).json({
+      success: false,
+      message: 'Failed to change password',
+    });
+  }
+}
