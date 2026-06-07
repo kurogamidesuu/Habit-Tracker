@@ -252,10 +252,46 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
       });
     }
   } catch (e) {
-    console.error('Failed to change password');
-    res.status(500).json({
+    console.error('Failed to change password', e);
+    return res.status(500).json({
       success: false,
       message: 'Failed to change password',
+    });
+  }
+}
+
+export const deleteAccount = async (req: AuthRequest, res: Response) => {
+  const { id } = req.user;
+
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (!user) return res.status(404).json({
+    success: false,
+    message: 'User not found',
+  });
+
+  try {
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    res.clearCookie('habit-refresh-token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Account deleted successfully',
+    });
+  } catch (e) {
+    console.error('Failed to delete account', e);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete account',
     });
   }
 }
