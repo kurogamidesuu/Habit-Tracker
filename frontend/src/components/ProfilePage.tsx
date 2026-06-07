@@ -10,6 +10,7 @@ import { useAuth } from "../hooks/useAuth";
 import SettingTab from "./SettingTab";
 import UsernameModal from "./UsernameModal";
 import PasswordModal from "./PasswordModal";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const ProfilePage = () => {
   const [showPermissionHelp, setShowPermissionHelp] = useState(false);
   const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
   const { habits } = useHabits();
   const { 
@@ -153,9 +155,7 @@ const ProfilePage = () => {
       title: "Delete Account",
       content: (
         <button
-          onClick={() => {
-            console.log("Trigger Account Deletion");
-          }}
+          onClick={() => setShowDeleteAccountModal(true) }
           className="text-red-400 bg-red-950/30 text-xs font-medium border border-red-900/50 hover:bg-red-900/60 hover:text-red-300 px-3 py-1.5 rounded-lg transition-all duration-200"
         >
           Delete
@@ -396,6 +396,11 @@ const ProfilePage = () => {
       {/* Change Password Modal */}
       {showPasswordModal && (
         <PasswordModal setShowPasswordModal={setShowPasswordModal} />
+      )}
+
+      {/* Delete Account Modal */}
+      {showDeleteAccountModal && (
+        <DeleteAccountModal setShowDeleteAccountModal={setShowDeleteAccountModal} />
       )}
     </main>
   );

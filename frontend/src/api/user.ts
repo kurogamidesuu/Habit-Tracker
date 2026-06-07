@@ -77,3 +77,24 @@ export const changePassword = async (
 
   return data;
 }
+
+export const deleteAccount = async (
+  confirmationMessage: string,
+  token: string | null,
+  setAccessToken: (token: string | null) => void,
+) => {
+  if (confirmationMessage !== "CONFIRM") {
+    throw new Error();
+  }
+
+  const data = await apiClient(
+    '/user/delete',
+    {
+      method: 'DELETE',
+    },
+    token,
+    setAccessToken,
+  );
+
+  return data;
+}
