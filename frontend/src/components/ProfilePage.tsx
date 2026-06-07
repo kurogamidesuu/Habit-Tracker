@@ -3,20 +3,28 @@ import { useHabits } from "../hooks/useHabits";
 import { useUser, USER_KEY } from "../hooks/useUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserPreferences, type User } from "../api/user";
-import { FaSignOutAlt, FaTrophy, FaChartLine, FaCog, FaBell, FaChevronRight, FaExclamationTriangle, FaClock, FaCheckCircle, FaSpinner } from "react-icons/fa";
+import { FaSignOutAlt, FaTrophy, FaChartLine, FaCog, FaBell, FaChevronRight, FaExclamationTriangle, FaClock, FaCheckCircle, FaSpinner, FaTrash, FaUserEdit, FaKey } from "react-icons/fa";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../hooks/useAuth";
+import SettingTab from "./SettingTab";
+import UsernameModal from "./UsernameModal";
+import PasswordModal from "./PasswordModal";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [showSettings, setShowSettings] = useState(false);
+
+  // local states
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
   const [browserPermission, setBrowserPermission] = useState(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
   const [showPermissionHelp, setShowPermissionHelp] = useState(false);
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const { habits } = useHabits();
   const { 
@@ -24,7 +32,7 @@ const ProfilePage = () => {
     isLoadingUser, 
     notificationsEnabled, 
     streakWarningEnabled, 
-    dailyReminderTime 
+    dailyReminderTime
   } = useUser();
   const { accessToken, setAccessToken } = useAuth();
 
@@ -69,7 +77,6 @@ const ProfilePage = () => {
         return;
       }
       
-      // Clean up application memory and queries
       queryClient.clear();
       localStorage.removeItem('tanstack-query-["user"]');
       localStorage.removeItem('tanstack-query-["habits"]');
@@ -115,6 +122,75 @@ const ProfilePage = () => {
     setLocalTime(newTime);
     mutation.mutate({ dailyReminderTime: newTime });
   };
+
+  const accountSettings = [
+    {
+      Icon: FaUserEdit,
+      title: "Change Username",
+      content: (
+        <button
+          onClick={() => setShowUsernameModal(true) }
+          className="text-sky-100 bg-sky-900/50 text-xs font-medium border border-sky-700/50 hover:bg-sky-800 hover:border-sky-500/50 px-3 py-1.5 rounded-lg transition-all duration-200"
+        >
+          Edit
+        </button>
+      )
+    },
+    {
+      Icon: FaKey, 
+      title: "Change Password",
+      content: (
+        <button
+          onClick={() => setShowPasswordModal(true) }
+          className="text-sky-100 bg-sky-900/50 text-xs font-medium border border-sky-700/50 hover:bg-sky-800 hover:border-sky-500/50 px-3 py-1.5 rounded-lg transition-all duration-200"
+        >
+          Update
+        </button>
+      )
+    },
+    {
+      Icon: FaTrash,
+      title: "Delete Account",
+      content: (
+        <button
+          onClick={() => {
+            console.log("Trigger Account Deletion");
+          }}
+          className="text-red-400 bg-red-950/30 text-xs font-medium border border-red-900/50 hover:bg-red-900/60 hover:text-red-300 px-3 py-1.5 rounded-lg transition-all duration-200"
+        >
+          Delete
+        </button>
+      )
+    }
+  ];
+
+  const advancedSettings = [
+    {
+      Icon: FaExclamationTriangle,
+      title: "Streak Warnings",
+      content: (
+        <button 
+          type="button"
+          onClick={() => togglePreference('streakWarningEnabled', streakWarningEnabled)}
+          className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors duration-300 ${streakWarningEnabled ? 'bg-amber-500' : 'bg-sky-950 border border-sky-800'}`}
+        >
+          <div className={`bg-sky-50 w-3 h-3 rounded-full shadow-md transform transition-transform duration-300 ${streakWarningEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
+        </button>
+      )
+    },
+    {
+      Icon: FaClock,
+      title: "Daily Reminder Time",
+      content: (
+        <input 
+          type="time" 
+          value={localTime}
+          onChange={handleTimeChange}
+          className="bg-sky-950 border border-sky-800 text-sky-100 text-xs font-mono rounded px-2 py-1 focus:outline-none focus:border-amber-400/60 transition-colors cursor-pointer scheme-dark"
+        />
+      )
+    }
+  ];
 
   return (
     <main className="h-screen w-full md:w-1/2 mx-auto bg-sky-950 text-sky-50 flex flex-col items-center pt-8 px-4 pb-[88px] overflow-hidden relative">
@@ -219,48 +295,48 @@ const ProfilePage = () => {
                 }`} />
               </button>
             </div>
-            
-            {/* Account Settings Collapsible Menu Header */}
-            <div className="flex items-center justify-between p-4 hover:bg-sky-900/40 cursor-pointer transition-colors group" onClick={() => setShowSettings(!showSettings)}>
+
+            {/* Account Settings */}
+            <div className="flex items-center justify-between p-4 hover:bg-sky-900/40 cursor-pointer transition-colors group" onClick={() => setShowAccountSettings(!showAccountSettings)}>
               <div className="flex items-center gap-3">
-                <FaCog className={`${showSettings ? 'text-amber-400' : 'text-sky-400/80'} group-hover:text-sky-300 transition-colors`} />
-                <span className={`text-sm ${showSettings ? 'text-amber-400' : 'text-sky-100'} font-medium`}>Advanced Settings</span>
+                <FaCog className={`${showAccountSettings ? 'text-amber-400' : 'text-sky-400/80'} group-hover:text-sky-300 transition-colors`} />
+                <span className={`text-sm ${showAccountSettings ? 'text-amber-400' : 'text-sky-100'} font-medium`}>Account Settings</span>
               </div>
-              <FaChevronRight className={`${showSettings ? "text-amber-400 rotate-90" : "text-sky-500/50"} text-xs group-hover:text-sky-400 transition-all duration-300`} />
+              <FaChevronRight className={`${showAccountSettings ? "text-amber-400 rotate-90" : "text-sky-500/50"} text-xs group-hover:text-sky-400 transition-all duration-300`} />
             </div>
 
-            <div className={`transition-all duration-300 overflow-hidden ${showSettings ? 'max-h-40 border-t border-sky-800/20 bg-sky-950/40' : 'max-h-0'}`}>
+            <div className={`transition-all duration-300 overflow-hidden ${showAccountSettings ? 'max-h-96 border-t border-sky-800/20 bg-sky-950/40' : 'max-h-0'}`}>
               <div className="p-4 flex flex-col gap-4">
-                
-                {/* Streak Warning Switch */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <FaExclamationTriangle className="text-sky-400/60 text-xs" />
-                    <span className="text-xs text-sky-200">Streak Warnings</span>
-                  </div>
-                  <button 
-                    type="button"
-                    onClick={() => togglePreference('streakWarningEnabled', streakWarningEnabled)}
-                    className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors duration-300 ${streakWarningEnabled ? 'bg-amber-500' : 'bg-sky-950 border border-sky-800'}`}
-                  >
-                    <div className={`bg-sky-50 w-3 h-3 rounded-full shadow-md transform transition-transform duration-300 ${streakWarningEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
-                  </button>
-                </div>
-
-                {/* Daily Check-in Reminder Time Picker */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <FaClock className="text-sky-400/60 text-xs" />
-                    <span className="text-xs text-sky-200">Daily Reminder Time</span>
-                  </div>
-                  <input 
-                    type="time" 
-                    value={localTime}
-                    onChange={handleTimeChange}
-                    className="bg-sky-950 border border-sky-800 text-sky-100 text-xs font-mono rounded px-2 py-1 focus:outline-none focus:border-amber-400/60 transition-colors cursor-pointer scheme-dark"
+                {accountSettings.map((setting, idx) => (
+                  <SettingTab
+                    key={idx}
+                    Icon={setting.Icon}
+                    title={setting.title}
+                    content={setting.content}
                   />
-                </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Advanced Settings */}
+            <div className="flex items-center justify-between p-4 hover:bg-sky-900/40 cursor-pointer transition-colors group" onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}>
+              <div className="flex items-center gap-3">
+                <FaCog className={`${showAdvancedSettings ? 'text-amber-400' : 'text-sky-400/80'} group-hover:text-sky-300 transition-colors`} />
+                <span className={`text-sm ${showAdvancedSettings ? 'text-amber-400' : 'text-sky-100'} font-medium`}>Advanced Settings</span>
+              </div>
+              <FaChevronRight className={`${showAdvancedSettings ? "text-amber-400 rotate-90" : "text-sky-500/50"} text-xs group-hover:text-sky-400 transition-all duration-300`} />
+            </div>
 
+            <div className={`transition-all duration-300 overflow-hidden ${showAdvancedSettings ? 'max-h-96 border-t border-sky-800/20 bg-sky-950/40' : 'max-h-0'}`}>
+              <div className="p-4 flex flex-col gap-4">
+                {advancedSettings.map((setting, idx) => (
+                  <SettingTab
+                    key={idx}
+                    Icon={setting.Icon}
+                    title={setting.title}
+                    content={setting.content}
+                  />
+                ))}
               </div>
             </div>
 
@@ -310,6 +386,16 @@ const ProfilePage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Change Username Modal */}
+      {showUsernameModal && (
+        <UsernameModal setShowUsernameModal={setShowUsernameModal} />
+      )}
+
+      {/* Change Password Modal */}
+      {showPasswordModal && (
+        <PasswordModal setShowPasswordModal={setShowPasswordModal} />
       )}
     </main>
   );
