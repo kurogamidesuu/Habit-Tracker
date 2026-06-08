@@ -12,11 +12,16 @@ import rateLimit from "express-rate-limit";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.BACKEND_BASE_URL,
+  'http://localhost:5173',
+].filter((origin): origin is string => !!origin);
 
 const app: Application = express();
 
 app.use(cors({
-  origin: [ process.env.FRONTEND_URL!, process.env.BACKEND_BASE_URL!, 'http://localhost:5173' ],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
