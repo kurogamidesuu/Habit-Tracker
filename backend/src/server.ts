@@ -7,6 +7,8 @@ import userRouter from "./routes/user.route";
 import pushRouter from "./routes/push.route";
 import './lib/scheduler';
 import authRouter from "./routes/auth.route";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +22,14 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: true,
+  message: { success: false, message: "Too many requests from this IP, please try again later." },
+}));
 
 app.use('/user', userRouter);
 app.use('/habits', habitRouter);
