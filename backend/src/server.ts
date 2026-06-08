@@ -26,6 +26,19 @@ app.use('/habits', habitRouter);
 app.use('/push', pushRouter);
 app.use('/auth', authRouter);
 
+app.use((err: any, req: Request, res: Response, next: Function) => {
+  const statusCode = err.statusCode || 500;
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  console.error(`[Error] ${err.message}`, err.stack);
+
+  res.status(statusCode).json({
+    success: false,
+    message: isProduction && statusCode === 500 ? "Internal Server Error" : err.message,
+    ...( !isProduction && { stack: err.stack } )
+  });
+});
+
 app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
