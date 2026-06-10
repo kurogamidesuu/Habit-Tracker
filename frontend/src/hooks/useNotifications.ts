@@ -1,19 +1,13 @@
 import { useEffect } from "react";
-import { getToken, messaging } from '../lib/firebase';
+import { firebaseConfig, getToken, messaging } from '../lib/firebase';
+import { useAuth } from "./useAuth";
 
 const VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 const API_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
 export const useNotifications = () => {
+  const { accessToken } = useAuth();
+
   useEffect(() => {
     const setupNotifications = async () => {
       try {
@@ -42,12 +36,11 @@ export const useNotifications = () => {
         }
 
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const authToken = localStorage.getItem('habit-token');
 
         await fetch(`${API_URL}/push/subscribe`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${authToken}`,
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

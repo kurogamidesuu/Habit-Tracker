@@ -1,8 +1,7 @@
-import { Response } from "express";
-import { AuthRequest } from "../middleware/auth.middleware";
+import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 
-export const getHabits = async (req: AuthRequest, res: Response) => {
+export const getHabits = async (req: Request, res: Response) => {
   const today = (req.query.today as string) || new Date().toLocaleDateString('en-CA');
 
   const todayObj = new Date(today);
@@ -69,7 +68,7 @@ export const getHabits = async (req: AuthRequest, res: Response) => {
   })
 }
 
-export const addHabit = async (req: AuthRequest, res: Response) => {
+export const addHabit = async (req: Request, res: Response) => {
   const { title } = req.body;
   
   try {
@@ -96,15 +95,23 @@ export const addHabit = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const removeHabit = async (req: AuthRequest, res: Response) => {
+export const removeHabit = async (req: Request, res: Response) => {
   const { id } = req.body;
 
   try {
-    await prisma.habit.delete({
+    const { count } = await prisma.habit.deleteMany({
       where: {
-        id
+        id: Number(id),
+        userId: req.user.id,
       }
     });
+
+    if (count === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Habit not found",
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -118,13 +125,14 @@ export const removeHabit = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const completeHabit = async (req: AuthRequest, res: Response) => {
+export const completeHabit = async (req: Request, res: Response) => {
   const { id, dateString } = req.body;
 
   try {
     const habit = await prisma.habit.findUnique({
       where: {
-        id,
+        id: Number(id),
+        userId: req.user.id,
       }
     });
 
@@ -182,7 +190,8 @@ export const completeHabit = async (req: AuthRequest, res: Response) => {
 
     const updatedHabit = await prisma.habit.update({
       where: {
-        id,
+        id: Number(id),
+        userId: req.user.id,
       },
       data: {
         isComplete: true,
@@ -203,7 +212,7 @@ export const completeHabit = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const getHabitAnalytics = async (req: AuthRequest, res: Response) => {
+export const getHabitAnalytics = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {

@@ -1,9 +1,8 @@
-import { Response } from "express";
-import { AuthRequest } from "../middleware/auth.middleware";
+import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { messaging } from "../lib/firebase";
 
-export const saveSubscription = async (req: AuthRequest, res: Response) => {
+export const saveSubscription = async (req: Request, res: Response) => {
   const { subscription, timezone } = req.body;
 
   try {
@@ -34,7 +33,7 @@ export const saveSubscription = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const sendTestNotification = async (req: AuthRequest, res: Response) => {
+export const sendTestNotification = async (req: Request, res: Response) => {
   try {
     const sub = await prisma.pushSubscription.findUnique({
       where: {
@@ -50,7 +49,6 @@ export const sendTestNotification = async (req: AuthRequest, res: Response) => {
     }
 
     const subscription = JSON.parse(sub.subscription);
-    console.log('Sending to token:', subscription.fcmToken?.slice(0, 20) + '...');
 
     await messaging.send({
       token: subscription.fcmToken,

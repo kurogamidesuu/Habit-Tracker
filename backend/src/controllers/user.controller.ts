@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import 'dotenv/config.js';
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
-import { AuthRequest } from "../middleware/auth.middleware";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -129,7 +128,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 }
 
-export const getUser = async (req: AuthRequest, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   const { id } = req.user;
 
   const user = await prisma.user.findUnique({
@@ -154,7 +153,7 @@ export const getUser = async (req: AuthRequest, res: Response) => {
   });
 }
 
-export const updatePreferences = async (req: AuthRequest, res: Response) => {
+export const updatePreferences = async (req: Request, res: Response) => {
   const { id } = req.user;
   const { notificationsEnabled, streakWarningEnabled, dailyReminderTime } = req.body;
 
@@ -181,7 +180,7 @@ export const updatePreferences = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const changeUsername = async (req: AuthRequest, res: Response) => {
+export const changeUsername = async (req: Request, res: Response) => {
   const { id } = req.user;
   const { newUsername } = req.body;
 
@@ -213,7 +212,7 @@ export const changeUsername = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const changePassword = async (req: AuthRequest, res: Response) => {
+export const changePassword = async (req: Request, res: Response) => {
   const { id } = req.user;
   const { currentPassword, newPassword } = req.body;
 
@@ -260,7 +259,7 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const deleteAccount = async (req: AuthRequest, res: Response) => {
+export const deleteAccount = async (req: Request, res: Response) => {
   const { id } = req.user;
 
   const user = await prisma.user.findUnique({
