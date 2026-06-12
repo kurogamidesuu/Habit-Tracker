@@ -71,23 +71,19 @@ Navigate to the backend directory and install dependencies:
 Create a .env file in the backend directory and configure the following variables:
 
 ```
-  # Server
-  PORT=5000
-  NODE_ENV=development
-  VITE_FRONTEND_BASE_URL=http://localhost:5173
-
-  # Database (Prisma / PostgreSQL)
-  DATABASE_URL="postgresql://user:password@localhost:5432/habitime?schema=public"
-
-  # Authentication & Security
-  JWT_SECRET="your_super_secret_jwt_key"
-  GOOGLE_CLIENT_ID="your_google_oauth_client_id"
-  GOOGLE_CLIENT_SECRET="your_google_oauth_client_secret"
-
-  # Firebase (For Push Notifications)
-  FIREBASE_PROJECT_ID="your_firebase_project_id"
-  FIREBASE_CLIENT_EMAIL="your_firebase_client_email"
-  FIREBASE_PRIVATE_KEY="your_firebase_private_key"
+  PORT = 3000
+  NODE_ENV="example"
+  DATABASE_URL="YOUR_DB_URL"
+  DIRECT_URL="YOUR_DB_DIRECT_URL"
+  JWT_SECRET='YOUR_JWT_ACCESS_TOKEN_SECRET'
+  REFRESH_TOKEN_SECRET='YOUR_REFRESH_TOKEN_SECRET'
+  FRONTEND_URL='https://habit-tracker-frontend-url.example.com'
+  BACKEND_BASE_URL='https://habit-tracker-backend-url.example.com'
+  FIREBASE_PROJECT_ID="YOUR_PROJECT_ID"
+  FIREBASE_CLIENT_EMAIL="YOUR_CLIENT_EMAIL"
+  FIREBASE_PRIVATE_KEY="YOUR_PRIVATE_KEY"
+  GOOGLE_CLIENT_ID="YOUR_CLIENT_ID"
+  GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET"
 ```
 
 Initialize the database using Prisma:
@@ -109,7 +105,15 @@ Open a new terminal window, navigate to the frontend directory, and install depe
 Create a .env file in the frontend directory:
 
 ```
-  VITE_BACKEND_BASE_URL=http://localhost:5000/api
+  VITE_BACKEND_BASE_URL=http://localhost:3000/api
+  VITE_VAPID_PUBLIC_KEY="YOUR_VAPID_KEY"
+  VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
+  VITE_FIREBASE_AUTH_DOMAIN="YOUR_FIREBASE_AUTH_DOMAIN"
+  VITE_FIREBASE_PROJECT_ID="YOUR_FIREBASE_PROJECT_ID"
+  VITE_FIREBASE_STORAGE_BUCKET="YOUR_FIREBASE_STORAGE_BUCKET"
+  VITE_FIREBASE_MESSAGING_SENDER_ID="YOUR_FIREBASE_MESSAGING_SENDER_ID"
+  VITE_FIREBASE_APP_ID="YOUR_FIREBASE_APP_ID"
+  VITE_FIREBASE_MEASUREMENT_ID="YOUR_FIREBASE_MEASUREMENT_ID"
 ```
 
 Start the Vite development server:
