@@ -15,13 +15,13 @@ describe('Habit API (Master Suite)', () => {
       }
     });
 
-    await request(app).post('/user/signup').send({
+    await request(app).post('/api/user/signup').send({
       username: 'TestUser',
       email: testEmail,
       password: 'password123'
     });
 
-    const loginRes = await request(app).post('/user/login').send({
+    const loginRes = await request(app).post('/api/user/login').send({
       email: testEmail,
       password: 'password123'
     });
@@ -42,7 +42,7 @@ describe('Habit API (Master Suite)', () => {
     // GET all habits
     it('should return a 400 status when the user has no habits', async () => {
       const res = await request(app)
-        .get('/habits')
+        .get('/api/habits')
         .set('Authorization', `Bearer ${userToken}`);
       
       expect(res.status).toBe(200);
@@ -53,7 +53,7 @@ describe('Habit API (Master Suite)', () => {
     // Create new habit
     it('should allow the user to create a new habit', async () => {
       const res = await request(app)
-        .post('/habits/add')
+        .post('/api/habits/add')
         .set('Authorization', `Bearer ${userToken}`)
         .send({ title: 'Drink Water' });
 
@@ -69,7 +69,7 @@ describe('Habit API (Master Suite)', () => {
     // Fetch the created habit
     it('should fetch the created habit to get its ID', async () => {
       const getRes = await request(app)
-        .get('/habits')
+        .get('/api/habits')
         .set('Authorization', `Bearer ${userToken}`);
       
       habitId = getRes.body.allHabits[0].id;
@@ -79,7 +79,7 @@ describe('Habit API (Master Suite)', () => {
     // Complete the habit on Day-1
     it('Day 1: First completion should set the currentStreak to 1', async () => {
       const res = await request(app)
-        .patch('/habits/complete')
+        .patch('/api/habits/complete')
         .set('Authorization', `Bearer ${userToken}`)
         .send({ id: habitId, dateString: '2026-05-01' });
       
@@ -91,7 +91,7 @@ describe('Habit API (Master Suite)', () => {
     // Complete the habit on Day-2 to increase streak
     it('Day 2: Consecutive completion should set the currentStreak to 2', async () => {
       const res = await request(app)
-        .patch('/habits/complete')
+        .patch('/api/habits/complete')
         .set('Authorization', `Bearer ${userToken}`)
         .send({ id: habitId, dateString: '2026-05-02' });
 
@@ -104,7 +104,7 @@ describe('Habit API (Master Suite)', () => {
     // Trying to complete again on Day-2 even though it is already complete
     it('Day 2 Duplicate: Completing again on the same day should fail', async () => {
       const res = await request(app)
-        .patch('/habits/complete')
+        .patch('/api/habits/complete')
         .set('Authorization', `Bearer ${userToken}`)
         .send({ id: habitId, dateString: '2026-05-02' });
 
@@ -116,7 +116,7 @@ describe('Habit API (Master Suite)', () => {
     // Miss a day and complete on Day-4
     it('Day 4: Missing Day 3 should punish the user and reset the streak to 1', async () => {
       const res = await request(app)
-        .patch('/habits/complete')
+        .patch('/api/habits/complete')
         .set('Authorization', `Bearer ${userToken}`)
         .send({ id: habitId, dateString: '2026-05-04' });
       
