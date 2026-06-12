@@ -125,28 +125,36 @@ The app should now be running locally at http://localhost:5173.
 ## Project Structure (Overview)
 
 ```text
-habitime/
+Habit-Tracker/
 ├── backend/
 │   ├── prisma/             # Database schema and migrations
 │   ├── src/
-│   │   ├── api/            # API Controllers
-│   │   ├── routes/         # Express routing
-│   │   ├── middleware/     # Auth, Error handling, Rate limiting
-│   │   ├── lib/            # Passport configs, Firebase setup
 │   │   ├── __tests__/      # Vitest and Supertest files
+│   │   ├── controllers/    # API Controllers
+│   │   ├── lib/            # Passport configs, Firebase setup, Cron jobs
+│   │   ├── middleware/     # Auth middleware
+│   │   ├── routes/         # Express routing
+│   │   ├── types/          # Defined types
 │   │   └── server.ts       # Express entry point
 │   └── package.json
+│   └── vitest.config.ts
 │
-└── frontend/
-    ├── public/             # Static assets (PWA icons, etc.)
-    ├── src/
-    │   ├── api/            # Axios/Fetch API wrappers
-    │   ├── components/     # Reusable UI components (Modals, Tabs)
-    │   ├── hooks/          # Custom TanStack query hooks (useUser, useHabits)
-    │   ├── pages/          # Route components (ProfilePage, Login, etc.)
-    │   ├── App.tsx         # Root component & routing setup
-    │   └── main.tsx        # React DOM render entry
-    └── package.json
+├── frontend/
+│   ├── public/             # Static assets (PWA icons, etc.)
+│   ├── src/
+│   │   ├── api/            # Fetch API wrappers
+│   │   ├── components/     # Reusable UI components (Modals, Tabs)
+│   │   ├── context/        # React Context for shared states
+│   │   ├── hooks/          # Custom TanStack query hooks (useUser, useHabits)
+│   │   ├── lib/            # Helper functions
+│   │   ├── App.tsx         # Root component & routing setup
+│   │   ├── index.css       # Main stylesheet
+│   │   └── main.tsx        # React DOM render entry
+│   │   └── setupTests.ts   # Setup file for frotend tests
+│   └── package.json
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -176,6 +184,7 @@ habitime/
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/kurogamidesuu/Habit-Tracker/issues) if you want to contribute.
 
 ## License
+
 This project is licensed under the ISC License.
 
 <i>Built by [Hempushp Chauhan](https://github.com/kurogamidesuu) - Feel free to reach out!</i>
