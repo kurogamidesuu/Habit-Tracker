@@ -1,4 +1,4 @@
-import express, { Application, Request, Response,  } from "express";
+import express, { Application, NextFunction, Request, Response,  } from "express";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
@@ -18,30 +18,46 @@ const allowedOrigins = [
   'http://localhost:5173',
 ].filter((origin): origin is string => !!origin);
 
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Too many requests from this IP, please try again later." },
+});
+
 const app: Application = express();
 
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(helmet());
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: true,
-  message: { success: false, message: "Too many requests from this IP, please try again later." },
-}));
 
+// rate limiters
+app.use(globalLimiter);
+app.use('/user/login', authLimiter);
+app.use('/user/signup', authLimiter);
+app.use('/auth', authLimiter);
+
+// routers
 app.use('/user', userRouter);
 app.use('/habits', habitRouter);
 app.use('/push', pushRouter);
 app.use('/auth', authRouter);
 
-app.use((err: any, req: Request, res: Response, next: Function) => {
+// global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   const isProduction = process.env.NODE_ENV === 'production';
 

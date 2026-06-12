@@ -132,7 +132,6 @@ export const completeHabit = async (req: Request, res: Response) => {
     const habit = await prisma.habit.findUnique({
       where: {
         id: Number(id),
-        userId: req.user.id,
       }
     });
 
@@ -140,6 +139,13 @@ export const completeHabit = async (req: Request, res: Response) => {
       return res.status(404).json({
         success: false,
         message: "Could not find the habit",
+      });
+    }
+
+    if (habit.userId !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access to this habit",
       });
     }
 
