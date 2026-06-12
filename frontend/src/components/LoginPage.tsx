@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiMail, FiLock } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
+import { login } from "../api/auth";
 
 interface LoginFormSchema {
   email: string;
@@ -18,14 +19,7 @@ const LoginPage = () => {
     const { email, password } = formData;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
+      const data = await login(email, password);
 
       if (data.success) {
         setAccessToken(data.token);
@@ -107,7 +101,7 @@ const LoginPage = () => {
                   : "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-sky-950 hover:shadow-amber-500/25 border border-amber-300"
               }`}
             >
-              <span className="relative z-10">{isSubmitting ? "Authenticating..." : "Sign In"}</span>
+              <span className="relative z-10">{isSubmitting ? <div className="h-5 w-5 border-3 border-amber-50 border-t-transparent mx-auto rounded-full animate-spin" /> : "Log In"}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
             </button>
           </form>

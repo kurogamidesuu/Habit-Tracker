@@ -51,10 +51,10 @@ app.use('/user/signup', authLimiter);
 app.use('/auth', authLimiter);
 
 // routers
-app.use('/user', userRouter);
-app.use('/habits', habitRouter);
-app.use('/push', pushRouter);
-app.use('/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/habits', habitRouter);
+app.use('/api/push', pushRouter);
+app.use('/api/auth', authRouter);
 
 // global error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

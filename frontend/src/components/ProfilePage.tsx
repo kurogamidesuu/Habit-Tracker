@@ -350,7 +350,7 @@ const ProfilePage = () => {
             className="w-full flex items-center justify-center gap-3 h-12 bg-red-950/30 border border-red-900/50 rounded-xl text-red-400 font-medium hover:bg-red-900/50 hover:text-red-300 hover:border-red-700/50 transition-all duration-200 shadow-sm"
           >
             <FaSignOutAlt />
-            <span>Sign Out</span>
+            <span>Log Out</span>
           </button>
         </div>
 

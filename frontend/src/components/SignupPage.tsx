@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
+import { signup } from "../api/auth";
 
 interface SignupFormSchema {
   username: string;
@@ -20,14 +21,7 @@ const SignupPage = () => {
     const { username, email, password } = formData;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/signup`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await res.json();
+      const data = await signup(username, email, password);
 
       if (data.success) {
         setAccessToken(data.token);
