@@ -4,6 +4,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  hasPassword: boolean;
   notificationsEnabled: boolean;
   streakWarningEnabled: boolean;
   dailyReminderTime: string;

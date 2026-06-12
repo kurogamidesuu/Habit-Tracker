@@ -72,24 +72,36 @@ export const registerUser = async (req: Request, res: Response) => {
 }
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email
-    }
-  });
-
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: 'Account not found'
+    const user = await prisma.user.findUnique({
+      where: { email }
     });
-  }
 
-  const match = await bcrypt.compare(password, user.password);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Account not found'
+      });
+    }
 
-  if (match) {
+    if (user.password === null) {
+      return res.status(400).json({
+        success: false,
+        message: "This email is linked with a Google account. Please use Google to sign in.",
+      });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
     const payload = {
       id: user.id,
       email: user.email,
@@ -105,7 +117,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const refreshToken = jwt.sign(
       payload,
       process.env.REFRESH_TOKEN_SECRET!,
-      { expiresIn: 60 * 60 * 24 * 7 }
+      { expiresIn: '7d' }
     );
 
     res.cookie('habit-refresh-token', refreshToken, {
@@ -120,13 +132,15 @@ export const loginUser = async (req: Request, res: Response) => {
       message: 'Logged in successfully',
       token: accessToken,
     });
-  } else {
-    return res.status(401).json({
+
+  } catch (error) {
+    console.error("Login Controller Error:", error);
+    return res.status(500).json({
       success: false,
-      message: 'Invalid credentials'
-    })
+      message: "An internal server error occurred."
+    });
   }
-}
+};
 
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.user;
@@ -146,6 +160,7 @@ export const getUser = async (req: Request, res: Response) => {
       id,
       username: user.username,
       email: user.email,
+      hasPassword: user.password !== null,
       notificationsEnabled: user.notificationsEnabled,
       streakWarningEnabled: user.streakWarningEnabled,
       dailyReminderTime: user.dailyReminderTime,
@@ -228,6 +243,29 @@ export const changePassword = async (req: Request, res: Response) => {
       });
     }
 
+    if (user.password === null) {
+      const newHash = await bcrypt.hash(newPassword, 10);
+
+      await prisma.user.update({
+        where: { id },
+        data: {
+          password: newHash,
+        },
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Password created successfully! You can now log in using email or Google.',
+      });
+    }
+
+    if (!currentPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is required to change your password.',
+      });
+    }
+
     const match = await bcrypt.compare(currentPassword, user.password);
 
     if (match) {
@@ -247,7 +285,7 @@ export const changePassword = async (req: Request, res: Response) => {
     } else {
       return res.status(401).json({
         success: false,
-        message: 'Invalid Password',
+        message: 'Invalid current password',
       });
     }
   } catch (e) {

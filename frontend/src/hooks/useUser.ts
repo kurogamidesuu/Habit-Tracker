@@ -14,6 +14,7 @@ export const useUser = () => {
 
   return {
     username: data?.username ?? '',
+    hasPassword: data?.hasPassword ?? false,
     isLoadingUser: isLoading,
     notificationsEnabled: data?.notificationsEnabled,
     streakWarningEnabled: data?.streakWarningEnabled,

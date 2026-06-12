@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { FiMail, FiLock } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { login } from "../api/auth";
+import { FaGoogle } from "react-icons/fa";
 
 interface LoginFormSchema {
   email: string;
@@ -35,6 +36,10 @@ const LoginPage = () => {
     }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/google`;
+  };
+
   return (
     <main className="min-h-screen w-full bg-black font-sans selection:bg-amber-500/30 flex justify-center">
       <div className="w-full md:w-1/2 max-w-md bg-sky-950 flex flex-col items-center relative overflow-hidden">
@@ -46,7 +51,7 @@ const LoginPage = () => {
         {/* Foreground Content */}
         <div className="relative z-10 w-full h-full flex flex-col px-8 py-16 overflow-y-auto">
           
-          <div className="mt-8 mb-12 flex flex-col items-center shrink-0">
+          <div className="mt-4 mb-10 flex flex-col items-center shrink-0">
             <h1 className="text-[3.5em] font-extrabold text-transparent bg-gradient-to-b from-amber-200 via-amber-400 to-amber-600 bg-clip-text leading-none tracking-tight drop-shadow-sm">
               KINTSUGI
             </h1>
@@ -56,55 +61,74 @@ const LoginPage = () => {
             </p>
           </div>
 
-          <form 
-            onSubmit={handleSubmit(onSubmit)} 
-            className="w-full bg-sky-900/20 backdrop-blur-md border border-sky-800/40 rounded-2xl p-6 shadow-2xl flex flex-col gap-5 shrink-0"
-          >
-            {/* Email Input */}
-            <div className="flex flex-col gap-1.5 relative">
-              <label htmlFor="email" className="text-[10px] font-semibold tracking-wider text-sky-400 uppercase pl-1">Email</label>
-              <div className="relative flex items-center">
-                <FiMail className="absolute left-4 text-sky-400/60 text-lg" />
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  {...register("email", { required: "Email is required" })}
-                  className="w-full bg-sky-950/50 border border-sky-800/60 rounded-xl pl-11 pr-4 py-3 text-sm text-sky-50 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 transition-all placeholder-sky-400/30 shadow-inner"
-                />
-              </div>
-              {errors.email && <p className="text-red-400/90 text-[10px] pl-1">{errors.email.message}</p>}
-            </div>
-
-            {/* Password Input */}
-            <div className="flex flex-col gap-1.5 relative">
-              <label htmlFor="password" className="text-[10px] font-semibold tracking-wider text-sky-400 uppercase pl-1">Password</label>
-              <div className="relative flex items-center">
-                <FiLock className="absolute left-4 text-sky-400/60 text-lg" />
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  {...register("password", { required: "Please enter a password" })}
-                  className="w-full bg-sky-950/50 border border-sky-800/60 rounded-xl pl-11 pr-4 py-3 text-sm text-sky-50 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 transition-all placeholder-sky-400/30 shadow-inner"
-                />
-              </div>
-              {errors.password && <p className="text-red-400/90 text-[10px] pl-1">{errors.password.message}</p>}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full h-12 mt-2 rounded-xl font-bold tracking-wide transition-all duration-300 shadow-lg relative overflow-hidden group ${
-                isSubmitting
-                  ? "bg-amber-900/50 text-amber-500/50 cursor-not-allowed border border-amber-900/30"
-                  : "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-sky-950 hover:shadow-amber-500/25 border border-amber-300"
-              }`}
+          <div className="w-full bg-sky-900/20 backdrop-blur-md border border-sky-800/40 rounded-2xl p-6 shadow-2xl flex flex-col gap-5 shrink-0">
+            <form 
+              onSubmit={handleSubmit(onSubmit)} 
+              className="flex flex-col gap-5"
             >
-              <span className="relative z-10">{isSubmitting ? <div className="h-5 w-5 border-3 border-amber-50 border-t-transparent mx-auto rounded-full animate-spin" /> : "Log In"}</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              {/* Email Input */}
+              <div className="flex flex-col gap-1.5 relative">
+                <label htmlFor="email" className="text-[10px] font-semibold tracking-wider text-sky-400 uppercase pl-1">Email</label>
+                <div className="relative flex items-center">
+                  <FiMail className="absolute left-4 text-sky-400/60 text-lg" />
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    {...register("email", { required: "Email is required" })}
+                    className="w-full bg-sky-950/50 border border-sky-800/60 rounded-xl pl-11 pr-4 py-3 text-sm text-sky-50 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 transition-all placeholder-sky-400/30 shadow-inner"
+                  />
+                </div>
+                {errors.email && <p className="text-red-400/90 text-[10px] pl-1">{errors.email.message}</p>}
+              </div>
+
+              {/* Password Input */}
+              <div className="flex flex-col gap-1.5 relative">
+                <label htmlFor="password" className="text-[10px] font-semibold tracking-wider text-sky-400 uppercase pl-1">Password</label>
+                <div className="relative flex items-center">
+                  <FiLock className="absolute left-4 text-sky-400/60 text-lg" />
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    {...register("password", { required: "Please enter a password" })}
+                    className="w-full bg-sky-950/50 border border-sky-800/60 rounded-xl pl-11 pr-4 py-3 text-sm text-sky-50 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 transition-all placeholder-sky-400/30 shadow-inner"
+                  />
+                </div>
+                {errors.password && <p className="text-red-400/90 text-[10px] pl-1">{errors.password.message}</p>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full h-12 mt-2 rounded-xl font-bold tracking-wide transition-all duration-300 shadow-lg relative overflow-hidden group ${
+                  isSubmitting
+                    ? "bg-amber-900/50 text-amber-500/50 cursor-not-allowed border border-amber-900/30"
+                    : "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-sky-950 hover:shadow-amber-500/25 border border-amber-300"
+                }`}
+              >
+                <span className="relative z-10">{isSubmitting ? <div className="h-5 w-5 border-3 border-amber-50 border-t-transparent mx-auto rounded-full animate-spin" /> : "Log In"}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              </button>
+            </form>
+
+            {/* Visual Divider */}
+            <div className="flex items-center my-1 select-none">
+              <div className="flex-1 h-[1px] bg-sky-800/30" />
+              <span className="px-3 text-[9px] font-bold text-sky-500/50 uppercase tracking-[0.2em]">Or</span>
+              <div className="flex-1 h-[1px] bg-sky-800/30" />
+            </div>
+
+            {/* Google OAuth Button */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full h-12 bg-sky-950/40 border border-sky-800/60 hover:border-sky-600/80 text-sky-200 hover:text-sky-50 font-semibold text-sm rounded-xl flex items-center justify-center gap-3 transition-all duration-300 hover:bg-sky-900/20 group"
+            >
+              <FaGoogle className="text-amber-400/90 text-base group-hover:scale-105 transition-transform" />
+              <span>Continue with Google</span>
             </button>
-          </form>
+          </div>
 
           <div className="mt-8 text-center text-sm text-sky-300/60 shrink-0">
             <span>Don't have an account? </span>

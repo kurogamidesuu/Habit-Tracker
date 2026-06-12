@@ -10,6 +10,7 @@ import { Bounce, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 import { useInstallPrompt } from "./hooks/useInstallPrompt"
 import InstallBanner from "./components/InstallBanner"
+import AuthCallback from "./components/AuthCallback"
 
 const App = () => {
   const { isInstallable, promptInstall } = useInstallPrompt()
@@ -19,6 +20,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
         <Route path="/" element={
           <ProtectedRoute>

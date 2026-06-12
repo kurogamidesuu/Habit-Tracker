@@ -30,8 +30,9 @@ const ProfilePage = () => {
 
   const { habits } = useHabits();
   const { 
-    username, 
-    isLoadingUser, 
+    username,
+    hasPassword,
+    isLoadingUser,
     notificationsEnabled, 
     streakWarningEnabled, 
     dailyReminderTime
@@ -395,7 +396,7 @@ const ProfilePage = () => {
 
       {/* Change Password Modal */}
       {showPasswordModal && (
-        <PasswordModal setShowPasswordModal={setShowPasswordModal} />
+        <PasswordModal setShowPasswordModal={setShowPasswordModal} hasPassword={hasPassword} />
       )}
 
       {/* Delete Account Modal */}

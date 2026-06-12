@@ -64,3 +64,34 @@ export const logout = async (req: Request, res: Response) => {
     message: 'Logged out successfully',
   })
 }
+
+export const googleCallback = async (req: Request, res: Response) => {
+  const user = req.user as { id: number; email: string; username: string };
+
+  const payload = {
+    id: user.id,
+    email: user.email,
+    username: user.username
+  };
+
+  const accessToken = jwt.sign(
+    payload,
+    process.env.JWT_SECRET!,
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = jwt.sign(
+    payload,
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: 60 * 60 * 24 * 7 }
+  );
+
+  res.cookie('habit-refresh-token', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
+
+  return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${accessToken}`);
+}

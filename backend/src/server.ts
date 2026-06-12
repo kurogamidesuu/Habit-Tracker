@@ -1,7 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express, { Application, NextFunction, Request, Response,  } from "express";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-import dotenv from "dotenv";
 import habitRouter from "./routes/habit.route";
 import userRouter from "./routes/user.route";
 import pushRouter from "./routes/push.route";
@@ -9,8 +10,8 @@ import './lib/scheduler';
 import authRouter from "./routes/auth.route";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import passport from "./lib/passport";
 
-dotenv.config();
 const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -43,12 +44,13 @@ app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(helmet());
+app.use(passport.initialize());
 
 // rate limiters
 app.use(globalLimiter);
-app.use('/user/login', authLimiter);
-app.use('/user/signup', authLimiter);
-app.use('/auth', authLimiter);
+app.use('/api/user/login', authLimiter);
+app.use('/api/user/signup', authLimiter);
+app.use('/api/auth', authLimiter);
 
 // routers
 app.use('/api/user', userRouter);
